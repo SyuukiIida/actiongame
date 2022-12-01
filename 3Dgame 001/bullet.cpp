@@ -11,6 +11,8 @@
 #include "bullet.h"
 #include "model.h"
 #include "shadow.h"
+#include "wall.h"
+#include "obstacle.h"
 
 #define MAX_BULLET			(128)			//ビルボードの最大数
 #define BULLET_LIFE			(1000)			//弾の寿命
@@ -121,6 +123,8 @@ void UpdateBullet(void)
 		if (g_aBullet[nCntBllet].bUse == true)
 		{//弾が使用されてる
 		
+			//前回の位置を保存
+			g_aBullet[nCntBllet].posold = g_aBullet[nCntBllet].pos;
 
 			//弾の更新処理
 			g_aBullet[nCntBllet].move.x += sinf(D3DX_PI+g_aBullet[nCntBllet].rot.y) * 1.5f;
@@ -132,6 +136,22 @@ void UpdateBullet(void)
 			//感性を追加
 			g_aBullet[nCntBllet].move.x += (0.0f - g_aBullet[nCntBllet].move.x) * 0.50f;
 			g_aBullet[nCntBllet].move.z += (0.0f - g_aBullet[nCntBllet].move.z) * 0.5f;
+
+			if (CollisionWall(&g_aBullet[nCntBllet].pos, &g_aBullet[nCntBllet].posold, &g_aBullet[nCntBllet].move) == true)
+			{
+				g_aBullet[nCntBllet].bUse = false;
+
+				SetEndShadow(g_nIdxShadowBullet[nCntBllet]);			
+			}
+
+			if (CollisionObstacle(&g_aBullet[nCntBllet].pos, &g_aBullet[nCntBllet].posold, &g_aBullet[nCntBllet].move) == true)
+			{
+				g_aBullet[nCntBllet].bUse = false;
+
+				SetEndShadow(g_nIdxShadowBullet[nCntBllet]);
+
+				HitObstacle()
+			}
 
 			//影の位置を設定
 			SetPositionShadow(g_nIdxShadowBullet[nCntBllet], g_aBullet[nCntBllet].pos);

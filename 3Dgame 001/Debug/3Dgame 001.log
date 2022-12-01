@@ -1,3 +1,11 @@
 ﻿  obstacle.cpp
-  3Dgame 001.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\3Dgame 001\Debug\3Dgame 001.exe
-  3Dgame 001.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\3Dgame 001\Debug\3Dgame 001.pdb (Full PDB)
+  bullet.cpp
+c:\users\student\documents\visual studio 2015\projects\3dgame 001\bullet.cpp(153): error C2660: 'HitObstacle': 関数に 0 個の引数を指定できません。
+c:\users\student\documents\visual studio 2015\projects\3dgame 001\bullet.cpp(154): error C2143: 構文エラー: ';' が '}' の前にありません。
+  コードを生成中...
+  コンパイル中...
+  model.cpp
+c:\users\student\documents\visual studio 2015\projects\3dgame 001\model.cpp(159): warning C4390: ';': 制御が空の文が見つかりました。意図した記述でしょうか?
+c:\users\student\documents\visual studio 2015\projects\3dgame 001\model.cpp(164): warning C4390: ';': 制御が空の文が見つかりました。意図した記述でしょうか?
+  main.cpp
+  コードを生成中...

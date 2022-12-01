@@ -5,6 +5,7 @@
 typedef struct
 {
 	D3DXVECTOR3 pos;
+	D3DXVECTOR3 posold;
 	D3DXVECTOR3 rot;
 	D3DXVECTOR3 move;
 	int nLife;

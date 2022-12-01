@@ -18,6 +18,7 @@ typedef struct
 	D3DXVECTOR3 pos;							//ˆÊ’u
 	D3DXVECTOR3 rot;							//Œü‚«
 	D3DXVECTOR3 move;						//ˆÚ“®—Ê
+	int nLife;								//‘Ì—Í
 	bool bUse;								//Žg‚Á‚Ä‚¢‚é‚©
 }Obstacle;
 
@@ -26,6 +27,7 @@ void InitObstacle(void);
 void UninitObstacle(void);
 void UpdateObstacle(void);
 void DrawObstacle(void);
+void HitObstacle(int nCntObstacle, int nDamage);
 bool CollisionObstacle(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMovefloat);
 
 #endif 

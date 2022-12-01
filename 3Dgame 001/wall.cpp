@@ -150,51 +150,50 @@ void DrawWall(void)
 //====================================================================
 bool CollisionWall(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
 {
-	bool bLand = false;
+	bool bLand = false;			//“–‚½‚Á‚½‚©‚Ç‚¤‚©
 
 	for (int nCnt = 0; nCnt < MAX_WALL; nCnt++)
 	{
-		//if (g_Wall[nCnt].pos.x  < pPos->x
-		//	&&g_Wall[nCnt].pos.x  > pPos->x)
-		//{//ƒuƒƒbƒN‚ÌxŽ²‚Ì•‚Ì’†‚É‚¢‚é‚Æ‚«
-			if (g_Wall[nCnt].pos.z+200.0f >= pPosOld->z
-				&&g_Wall[nCnt].pos.z + 200.0f <= pPos->z)
-			{
-				pPos->z = g_Wall[nCnt].pos.z + 200.0f;
-				pMove->z = 0.0f;
 
-				//’µ‚Ë•Ô‚è
+		if (g_Wall[nCnt].pos.z + 200.0f >= pPosOld->z
+			&&g_Wall[nCnt].pos.z + 200.0f <= pPos->z)
+		{
+			pPos->z = g_Wall[nCnt].pos.z + 200.0f;
+			pMove->z = 0.0f;
+			bLand = true;
 
-				/*pMove->z = pMove->z*-15.0f;
-				pMove->x = pMove->x*-15.0f;*/
-			}
+			//’µ‚Ë•Ô‚è
 
-			if (g_Wall[nCnt].pos.z - 200.0f <= pPosOld->z
-				&&g_Wall[nCnt].pos.z - 200.0f >= pPos->z)
-			{
-				pPos->z = g_Wall[nCnt].pos.z - 200.0f;
-				pMove->z = 0.0f;
-			}
-		//}
+			/*pMove->z = pMove->z*-15.0f;
+			pMove->x = pMove->x*-15.0f;*/
+		}
 
-		//if (g_Wall[nCnt].pos.z - OBSTACLE_SIZE < pPos->z
-		//	&&g_Wall[nCnt].pos.z + OBSTACLE_SIZE > pPos->z)
-		//{
-		//	if (g_Wall[nCnt].pos.x + OBSTACLE_SIZE <= pPosOld->x
-		//		&&g_Wall[nCnt].pos.x + OBSTACLE_SIZE >= pPos->x)
-		//	{
-		//		pPos->x = g_Wall[nCnt].pos.x + OBSTACLE_SIZE;
-		//		pMove->x = 0.0f;
-		//	}
+		if (g_Wall[nCnt].pos.z - 200.0f <= pPosOld->z
+			&&g_Wall[nCnt].pos.z - 200.0f >= pPos->z)
+		{
+			pPos->z = g_Wall[nCnt].pos.z - 200.0f;
+			pMove->z = 0.0f;
+			bLand = true;
+		}
 
-		//	if (g_Wall[nCnt].pos.x - OBSTACLE_SIZE >= pPosOld->x
-		//		&&g_Wall[nCnt].pos.x - OBSTACLE_SIZE <= pPos->x)
-		//	{
-		//		pPos->x = g_Wall[nCnt].pos.x - OBSTACLE_SIZE;
-		//		pMove->x = 0.0f;
-		//	}
-		//}
+
+		if (g_Wall[nCnt].pos.x + 200.0f >= pPosOld->x
+			&&g_Wall[nCnt].pos.x + 200.0f <= pPos->x)
+		{
+			pPos->x = g_Wall[nCnt].pos.x + 200.0f;
+			pMove->x = 0.0f;
+			bLand = true;
+		}
+
+		if (g_Wall[nCnt].pos.x - 200.0f <= pPosOld->x
+			&&g_Wall[nCnt].pos.x - 200.0f >= pPos->x)
+		{
+			pPos->x = g_Wall[nCnt].pos.x - 200.0f;
+			pMove->x = 0.0f;
+			bLand = true;
+		}
 	}
+	
 
 	return bLand;
 }

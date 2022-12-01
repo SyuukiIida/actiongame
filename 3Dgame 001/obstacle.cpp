@@ -10,6 +10,7 @@
 
 //マクロ定義
 #define MAX_OBSRACLE		(2)					//障害物最大数
+#define MAX_LIFE			(3)					//障害物体力
 
 //グローバル変数
 LPD3DXMESH g_pMeshObstacle[MAX_OBSRACLE] = {};					//メッシュ（頂点情報へのポインタ）
@@ -35,6 +36,7 @@ void InitObstacle(void)
 		g_aObstacle[nCnt].pos = D3DXVECTOR3(0.0f, 0.0f, 50.0f * nCnt);
 		g_aObstacle[nCnt].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aObstacle[nCnt].nLife = MAX_LIFE;
 		g_aObstacle[nCnt].bUse = true;
 	}
 	
@@ -44,7 +46,7 @@ void InitObstacle(void)
 		pDevice, NULL, &g_pBuffMatObstacle,
 		NULL, &g_dwNumMatObstacle, &g_pMeshObstacle[0]);
 
-	D3DXLoadMeshFromX("data\\MODEL\\pot.x", D3DXMESH_SYSTEMMEM,
+	D3DXLoadMeshFromX("data\\MODEL\\moon.x", D3DXMESH_SYSTEMMEM,
 		pDevice, NULL, &g_pBuffMatObstacle,
 		NULL, &g_dwNumMatObstacle, &g_pMeshObstacle[1]);
 
@@ -158,6 +160,27 @@ void DrawObstacle(void)
 }
 
 //====================================================================
+//障害物のヒット処理
+//====================================================================
+void HitObstacle(int nCntObstacle, int nDamage)
+{
+	g_aObstacle[nCntObstacle].nLife -= nDamage;
+
+	if (g_aObstacle[nCntObstacle].nLife == 0)
+	{
+		//爆発の設定
+		//PlaySound(SOUND_LABEL_SE_EXPLOSION);
+
+		//SetExplosion(g_aEnemy[nCntEnemy].pos, g_aEnemy[nCntEnemy].rot);
+
+		//
+		g_aObstacle[nCntObstacle].bUse = false;
+
+	}
+
+}
+
+//====================================================================
 //障害物の当たり判定
 //====================================================================
 bool CollisionObstacle(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
@@ -177,6 +200,7 @@ bool CollisionObstacle(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMo
 				{//奥から手前に当たった時
 					pPos->z = g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE;
 					pMove->z = 0.0f;
+					bLand = true;
 
 					//跳ね返り
 
@@ -189,6 +213,7 @@ bool CollisionObstacle(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMo
 				{
 					pPos->z = g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE;
 					pMove->z = 0.0f;
+					bLand = true;
 				}
 			}
 
@@ -200,6 +225,7 @@ bool CollisionObstacle(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMo
 				{
 					pPos->x = g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE;
 					pMove->x = 0.0f;
+					bLand = true;
 				}
 
 				if (g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE >= pPosOld->x
@@ -207,6 +233,7 @@ bool CollisionObstacle(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMo
 				{
 					pPos->x = g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE;
 					pMove->x = 0.0f;
+					bLand = true;
 				}
 			}
 		}
