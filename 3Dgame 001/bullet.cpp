@@ -144,13 +144,13 @@ void UpdateBullet(void)
 				SetEndShadow(g_nIdxShadowBullet[nCntBllet]);			
 			}
 
-			if (CollisionObstacle(&g_aBullet[nCntBllet].pos, &g_aBullet[nCntBllet].posold, &g_aBullet[nCntBllet].move) == true)
+			if (CollisionObstacleBullet(&g_aBullet[nCntBllet].pos, &g_aBullet[nCntBllet].posold, &g_aBullet[nCntBllet].move) == true)
 			{
 				g_aBullet[nCntBllet].bUse = false;
 
 				SetEndShadow(g_nIdxShadowBullet[nCntBllet]);
 
-				HitObstacle()
+				//HitObstacle()
 			}
 
 			//âeÇÃà íuÇê›íË

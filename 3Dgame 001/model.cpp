@@ -156,12 +156,12 @@ void UpdateModel(void)
 	//	g_aModel.pos.x = -189.0f;
 	//}
 
-	if(CollisionObstacle(&g_aModel.pos, &g_aModel.posold, &g_aModel.move)==true);
+	if(CollisionObstaclePlayer(&g_aModel.pos, &g_aModel.posold, &g_aModel.move)==true)
 	{
 
 	}
 
-	if (CollisionWall(&g_aModel.pos, &g_aModel.posold, &g_aModel.move) == true);
+	if (CollisionWall(&g_aModel.pos, &g_aModel.posold, &g_aModel.move) == true)
 	{
 
 	}

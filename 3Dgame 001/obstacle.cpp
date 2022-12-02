@@ -119,40 +119,42 @@ void DrawObstacle(void)
 
 	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
 	{
-		//ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&g_mtxWorldObstacle);
-		//向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aObstacle[nCnt].rot.y, g_aObstacle[nCnt].rot.x, g_aObstacle[nCnt].rot.z);
-
-		D3DXMatrixMultiply(&g_mtxWorldObstacle, &g_mtxWorldObstacle, &mtxRot);
-
-		//位置を反映
-		D3DXMatrixTranslation(&mtxTrans, g_aObstacle[nCnt].pos.x, g_aObstacle[nCnt].pos.y, g_aObstacle[nCnt].pos.z);
-
-		D3DXMatrixMultiply(&g_mtxWorldObstacle, &g_mtxWorldObstacle, &mtxTrans);
-
-		//ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &g_mtxWorldObstacle);
-
-		//現在のマテリアルを取得
-		pDevice->GetMaterial(&matDef);
-
-		//マテリアルデータへのポインタを取得
-		pMat = (D3DXMATERIAL*)g_pBuffMatObstacle->GetBufferPointer();
-
-		for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle; nCntMat++)
+		if (g_aObstacle[nCnt].bUse == true)
 		{
-			//マテリアルの設定
-			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
-			//テクスチャんの設定
-			pDevice->SetTexture(0, g_apTextureObstacle[nCntMat]);
-			//モデル（パーツ）の描画
-			g_pMeshObstacle[nCnt]->DrawSubset(nCntMat);
+			//ワールドマトリックスの初期化
+			D3DXMatrixIdentity(&g_mtxWorldObstacle);
+			//向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aObstacle[nCnt].rot.y, g_aObstacle[nCnt].rot.x, g_aObstacle[nCnt].rot.z);
+
+			D3DXMatrixMultiply(&g_mtxWorldObstacle, &g_mtxWorldObstacle, &mtxRot);
+
+			//位置を反映
+			D3DXMatrixTranslation(&mtxTrans, g_aObstacle[nCnt].pos.x, g_aObstacle[nCnt].pos.y, g_aObstacle[nCnt].pos.z);
+
+			D3DXMatrixMultiply(&g_mtxWorldObstacle, &g_mtxWorldObstacle, &mtxTrans);
+
+			//ワールドマトリックスの設定
+			pDevice->SetTransform(D3DTS_WORLD, &g_mtxWorldObstacle);
+
+			//現在のマテリアルを取得
+			pDevice->GetMaterial(&matDef);
+
+			//マテリアルデータへのポインタを取得
+			pMat = (D3DXMATERIAL*)g_pBuffMatObstacle->GetBufferPointer();
+
+			for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle; nCntMat++)
+			{
+				//マテリアルの設定
+				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+				//テクスチャんの設定
+				pDevice->SetTexture(0, g_apTextureObstacle[nCntMat]);
+				//モデル（パーツ）の描画
+				g_pMeshObstacle[nCnt]->DrawSubset(nCntMat);
+			}
+
+			//保存していたマテリアルを戻す
+			pDevice->SetMaterial(&matDef);
 		}
-
-		//保存していたマテリアルを戻す
-		pDevice->SetMaterial(&matDef);
-
 		//頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D);
 	}
@@ -176,14 +178,82 @@ void HitObstacle(int nCntObstacle, int nDamage)
 		//
 		g_aObstacle[nCntObstacle].bUse = false;
 
+		SetEndShadow(g_nIdxShadowObstacle[nCntObstacle]);
+
 	}
 
 }
 
 //====================================================================
-//障害物の当たり判定
+//障害物と弾の当たり判定
 //====================================================================
-bool CollisionObstacle(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
+bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
+{
+	bool bLand = false;
+
+	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+	{
+		if (g_aObstacle[nCnt].bUse == true)
+		{
+
+			if (g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE < pPos->x
+				&&g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE > pPos->x)
+			{//障害物のx軸の幅の中にいるとき
+				if (g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE <= pPosOld->z
+					&&g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE >= pPos->z)
+				{//奥から手前に当たった時
+					pPos->z = g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE;
+					pMove->z = 0.0f;
+					bLand = true;
+					HitObstacle(nCnt, 1);
+
+					//跳ね返り
+
+					/*pMove->z = pMove->z*-15.0f;
+					pMove->x = pMove->x*-15.0f;*/
+				}
+
+				if (g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE >= pPosOld->z
+					&&g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE <= pPos->z)
+				{
+					pPos->z = g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE;
+					pMove->z = 0.0f;
+					bLand = true;
+					HitObstacle(nCnt, 1);
+				}
+			}
+
+			if (g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE < pPos->z
+				&&g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE > pPos->z)
+			{
+				if (g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE <= pPosOld->x
+					&&g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE >= pPos->x)
+				{
+					pPos->x = g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE;
+					pMove->x = 0.0f;
+					bLand = true;
+					HitObstacle(nCnt, 1);
+				}
+
+				if (g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE >= pPosOld->x
+					&&g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE <= pPos->x)
+				{
+					pPos->x = g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE;
+					pMove->x = 0.0f;
+					bLand = true;
+					HitObstacle(nCnt, 1);
+				}
+			}
+		}
+	}
+
+	return bLand;
+}
+
+//====================================================================
+//障害物とプレイヤーの当たり判定
+//====================================================================
+bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
 {
 	bool bLand = false;
 
