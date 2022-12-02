@@ -1,4 +1,4 @@
 ﻿  obstacle.cpp
-cl : コマンド ライン warning D9028: 簡易リビルド時のエラーです、通常のビルドに戻します
+c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(268): warning C4101: 'matDef': ローカル変数は 1 度も使われていません。
   3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\Debug\3Dgame 001.exe
   3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\Debug\3Dgame 001.pdb (Full PDB)

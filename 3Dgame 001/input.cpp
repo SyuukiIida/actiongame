@@ -3,6 +3,7 @@
 //
 #include "input.h"
 
+
 //マクロ定義
 #define NUM_KEY_MAX (256)	//キーの最大値
 

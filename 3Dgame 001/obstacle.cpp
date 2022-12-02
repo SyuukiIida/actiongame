@@ -14,9 +14,10 @@
 
 //グローバル変数
 LPD3DXMESH g_pMeshObstacle[MAX_OBSRACLE] = {};					//メッシュ（頂点情報へのポインタ）
-LPD3DXBUFFER g_pBuffMatObstacle = NULL;			//頂点バッファのポインタ
+LPD3DXBUFFER g_pBuffMatObstacle[MAX_OBSRACLE] = {};			//頂点バッファのポインタ
 LPDIRECT3DTEXTURE9 g_apTextureObstacle[10] = {};	//テクスチャへのポインタ
-DWORD g_dwNumMatObstacle = 0;						//マテリアルの数
+DWORD g_dwNumMatObstacle[MAX_OBSRACLE] = { 0 };						//マテリアルの数
+
 Obstacle g_aObstacle[MAX_OBSRACLE];
 
 D3DXMATRIX g_mtxWorldObstacle;
@@ -50,12 +51,12 @@ void InitObstacle(void)
 
 	//xファイルの読み込み
 	D3DXLoadMeshFromX("data\\MODEL\\pot.x", D3DXMESH_SYSTEMMEM,
-		pDevice, NULL, &g_pBuffMatObstacle,
-		NULL, &g_dwNumMatObstacle, &g_pMeshObstacle[0]);
+		pDevice, NULL, &g_pBuffMatObstacle[0],
+		NULL, &g_dwNumMatObstacle[0], &g_pMeshObstacle[0]);
 
 	D3DXLoadMeshFromX("data\\MODEL\\moon.x", D3DXMESH_SYSTEMMEM,
-		pDevice, NULL, &g_pBuffMatObstacle,
-		NULL, &g_dwNumMatObstacle, &g_pMeshObstacle[1]);
+		pDevice, NULL, &g_pBuffMatObstacle[1],
+		NULL, &g_dwNumMatObstacle[1], &g_pMeshObstacle[1]);
 
 	
 	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
@@ -110,30 +111,26 @@ void InitObstacle(void)
 
 		g_aObstacle[nCnt].vtxMinModel += g_aObstacle[nCnt].pos;
 		g_aObstacle[nCnt].vtxMaxModel += g_aObstacle[nCnt].pos;
-	}
 
-	
+		//マテリアル情報に対するポインタを取得
+		pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCnt]->GetBufferPointer();
 
-	//マテリアル情報に対するポインタを取得
-	pMat = (D3DXMATERIAL*)g_pBuffMatObstacle->GetBufferPointer();
+		for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCnt]; nCntMat++)
+		{
+			if (pMat[nCntMat].pTextureFilename != NULL)
+			{//テクスチャファイルが存在する
 
-	for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle; nCntMat++)
-	{
-		if (pMat[nCntMat].pTextureFilename != NULL)
-		{//テクスチャファイルが存在する
-
-		 //テクスチャの読み込み
-			D3DXCreateTextureFromFile(pDevice,
-				pMat[nCntMat].pTextureFilename,
-				&g_apTextureObstacle[nCntMat]);
+			 //テクスチャの読み込み
+				D3DXCreateTextureFromFile(pDevice,
+					pMat[nCntMat].pTextureFilename,
+					&g_apTextureObstacle[nCntMat]);
+			}
 		}
-	}
 
-	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
-	{
 		//影を設定
 		g_nIdxShadowObstacle[nCnt] = SetShadow();
 	}
+
 }
 
 //====================================================================
@@ -152,10 +149,13 @@ void UninitObstacle(void)
 	}
 
 	//バッファの破棄
-	if (g_pBuffMatObstacle != NULL)
+	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
 	{
-		g_pBuffMatObstacle->Release();
-		g_pBuffMatObstacle = NULL;
+		if (g_pBuffMatObstacle[nCnt] != NULL)
+		{
+			g_pBuffMatObstacle[nCnt]->Release();
+			g_pBuffMatObstacle[nCnt] = NULL;
+		}
 	}
 }
 
@@ -164,10 +164,43 @@ void UninitObstacle(void)
 //====================================================================
 void UpdateObstacle(void)
 {
-	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
-	{
-		//影の位置を設定
-		SetPositionShadow(g_nIdxShadowObstacle[nCnt], g_aObstacle[nCnt].pos);
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();		//デバイスの取得
+	D3DXMATERIAL *pMat;								//マテリアルデータへのポインタ
+
+
+	
+		for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+		{
+			pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCnt]->GetBufferPointer();
+
+			if (g_aObstacle[nCnt].bUse == true)
+			{
+				//影の位置を設定
+				SetPositionShadow(g_nIdxShadowObstacle[nCnt], g_aObstacle[nCnt].pos);
+
+				switch (g_aObstacle[nCnt].state)
+				{
+				case ENEMYSTATE_NORMAL:
+
+					break;
+
+				case ENEMYSTATE_DAMAGE:
+					g_aObstacle[nCnt].nCounterState--;
+
+					if (g_aObstacle[nCnt].nCounterState <= 0)
+					{
+						g_aObstacle[nCnt].state = ENEMYSTATE_NORMAL;
+
+						for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCnt]; nCntMat++)
+						{
+							//頂点カラーの設定
+							pMat[nCntMat].MatD3D.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+						}
+					}
+					break;
+				}
+			}
+		
 	}
 }
 
@@ -204,12 +237,13 @@ void DrawObstacle(void)
 			pDevice->GetMaterial(&matDef);
 
 			//マテリアルデータへのポインタを取得
-			pMat = (D3DXMATERIAL*)g_pBuffMatObstacle->GetBufferPointer();
+			pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCnt]->GetBufferPointer();
 
-			for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle; nCntMat++)
+			for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCnt]; nCntMat++)
 			{
 				//マテリアルの設定
 				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+
 				//テクスチャんの設定
 				pDevice->SetTexture(0, g_apTextureObstacle[nCntMat]);
 				//モデル（パーツ）の描画
@@ -230,6 +264,10 @@ void DrawObstacle(void)
 //====================================================================
 void HitObstacle(int nCntObstacle, int nDamage)
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();		//デバイスの取得
+	D3DMATERIAL9 matDef;							//マテリアル保存用
+	D3DXMATERIAL *pMat;								//マテリアルデータへのポインタ
+
 	g_aObstacle[nCntObstacle].nLife -= nDamage;
 
 	if (g_aObstacle[nCntObstacle].nLife == 0)
@@ -246,24 +284,20 @@ void HitObstacle(int nCntObstacle, int nDamage)
 
 	}
 
-	//else
-	//{
-	//	//頂点バッファをロックし頂点情報へのポインタを取得
-	//	g_pVtxBuffEnemy->Lock(0, 0, (void**)&pVtx, 0);
+	else
+	{
+		g_aObstacle[nCntObstacle].state = ENEMYSTATE_DAMAGE;
+		g_aObstacle[nCntObstacle].nCounterState = 50;
 
-	//	g_aObstacle[nCntObstacle].state = ENEMYSTATE_DAMAGE;
-	//	g_aObstacle[nCntObstacle].nCounterState = 5;
+		pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCntObstacle]->GetBufferPointer();
 
-	//	pVtx += nCntEnemy * 4;
-
-	//	//頂点カラーの設定
-	//	pVtx[0].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-	//	pVtx[1].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-	//	pVtx[2].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-	//	pVtx[3].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-
-	//	g_pVtxBuffEnemy->Unlock();
-	//}
+		for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCntObstacle]; nCntMat++)
+		{
+			pMat[nCntMat].MatD3D.Diffuse = { 1.0f, 0.0f, 0.0f, 1.0f };
+			//マテリアルの設定
+			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+		}
+	}
 
 }
 
@@ -278,6 +312,7 @@ bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 	{
 		if (g_aObstacle[nCnt].bUse == true)
 		{
+
 			if (g_aObstacle[nCnt].vtxMinModel.x < pPos->x
 				&&g_aObstacle[nCnt].vtxMaxModel.x > pPos->x)
 			{//障害物のx軸の幅の中にいるとき

@@ -112,6 +112,7 @@ void DrawShadow(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();//デバイスの取得
 	D3DXMATRIX mtxRot, mtxTrans;			//計算用マトリックス
 
+	//減算合成
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
