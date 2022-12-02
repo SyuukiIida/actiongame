@@ -12,12 +12,24 @@ typedef enum
 	COLLISIONBLOCK_MAX
 }COLLISIONOBSTACLE;
 
+//障害物の状態
+typedef enum
+{
+	ENEMYSTATE_NORMAL = 0,		//通常状態
+	ENEMYSTATE_DAMAGE,			//ダメージ状態
+	ENEMYSTATE_MAX
+}OBSTACLESTATE;
+
 //モデル構造体の定義
 typedef struct
 {
-	D3DXVECTOR3 pos;							//位置
-	D3DXVECTOR3 rot;							//向き
+	D3DXVECTOR3 pos;						//位置
+	D3DXVECTOR3 vtxMinModel;				//頂点情報最小値
+	D3DXVECTOR3 vtxMaxModel;				//頂点情報最大値
+	D3DXVECTOR3 rot;						//向き
 	D3DXVECTOR3 move;						//移動量
+	OBSTACLESTATE state;					//状態
+	int nCounterState;						//状態管理カウンター
 	int nLife;								//体力
 	bool bUse;								//使っているか
 }Obstacle;

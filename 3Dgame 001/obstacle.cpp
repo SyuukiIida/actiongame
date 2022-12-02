@@ -31,9 +31,16 @@ void InitObstacle(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();		//デバイスの取得
 	D3DXMATERIAL *pMat;	//マテリアルへのポインタ
 
+	//頂点情報の変数
+	int nNumVtx;		//頂点数
+	DWORD dwSizeFVF;	//頂点フォーマットのサイズ
+	BYTE *pVtxBuff;		//頂点バッファポインタ
+
 	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
 	{
 		g_aObstacle[nCnt].pos = D3DXVECTOR3(0.0f, 0.0f, 50.0f * nCnt);
+		g_aObstacle[nCnt].vtxMinModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aObstacle[nCnt].vtxMaxModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].nLife = MAX_LIFE;
@@ -49,6 +56,63 @@ void InitObstacle(void)
 	D3DXLoadMeshFromX("data\\MODEL\\moon.x", D3DXMESH_SYSTEMMEM,
 		pDevice, NULL, &g_pBuffMatObstacle,
 		NULL, &g_dwNumMatObstacle, &g_pMeshObstacle[1]);
+
+	
+	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+	{
+		//頂点数を取得
+		nNumVtx = g_pMeshObstacle[nCnt]->GetNumVertices();
+
+		//頂点フォーマット
+		dwSizeFVF = D3DXGetFVFVertexSize(g_pMeshObstacle[nCnt]->GetFVF());
+
+		//頂点バッファロック
+		g_pMeshObstacle[nCnt]->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
+
+		for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
+		{
+			D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVtxBuff;
+
+			if (g_aObstacle[nCnt].vtxMinModel.x > vtx.x)
+			{
+				g_aObstacle[nCnt].vtxMinModel.x = vtx.x;
+			}
+
+			if (g_aObstacle[nCnt].vtxMaxModel.x < vtx.x)
+			{
+				g_aObstacle[nCnt].vtxMaxModel.x = vtx.x;
+			}
+
+			if (g_aObstacle[nCnt].vtxMinModel.y > vtx.y)
+			{
+				g_aObstacle[nCnt].vtxMinModel.y = vtx.y;
+			}
+
+			if (g_aObstacle[nCnt].vtxMaxModel.y < vtx.y)
+			{
+				g_aObstacle[nCnt].vtxMaxModel.y = vtx.y;
+			}
+
+			if (g_aObstacle[nCnt].vtxMinModel.z > vtx.z)
+			{
+				g_aObstacle[nCnt].vtxMinModel.z = vtx.z;
+			}
+
+			if (g_aObstacle[nCnt].vtxMaxModel.z < vtx.z)
+			{
+				g_aObstacle[nCnt].vtxMaxModel.z = vtx.z;
+			}
+
+			pVtxBuff += dwSizeFVF;
+		}
+
+		g_pMeshObstacle[nCnt]->UnlockVertexBuffer();
+
+		g_aObstacle[nCnt].vtxMinModel += g_aObstacle[nCnt].pos;
+		g_aObstacle[nCnt].vtxMaxModel += g_aObstacle[nCnt].pos;
+	}
+
+	
 
 	//マテリアル情報に対するポインタを取得
 	pMat = (D3DXMATERIAL*)g_pBuffMatObstacle->GetBufferPointer();
@@ -182,6 +246,25 @@ void HitObstacle(int nCntObstacle, int nDamage)
 
 	}
 
+	//else
+	//{
+	//	//頂点バッファをロックし頂点情報へのポインタを取得
+	//	g_pVtxBuffEnemy->Lock(0, 0, (void**)&pVtx, 0);
+
+	//	g_aObstacle[nCntObstacle].state = ENEMYSTATE_DAMAGE;
+	//	g_aObstacle[nCntObstacle].nCounterState = 5;
+
+	//	pVtx += nCntEnemy * 4;
+
+	//	//頂点カラーの設定
+	//	pVtx[0].col = D3DCOLOR_RGBA(255, 0, 0, 255);
+	//	pVtx[1].col = D3DCOLOR_RGBA(255, 0, 0, 255);
+	//	pVtx[2].col = D3DCOLOR_RGBA(255, 0, 0, 255);
+	//	pVtx[3].col = D3DCOLOR_RGBA(255, 0, 0, 255);
+
+	//	g_pVtxBuffEnemy->Unlock();
+	//}
+
 }
 
 //====================================================================
@@ -195,14 +278,13 @@ bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 	{
 		if (g_aObstacle[nCnt].bUse == true)
 		{
-
-			if (g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE < pPos->x
-				&&g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE > pPos->x)
+			if (g_aObstacle[nCnt].vtxMinModel.x < pPos->x
+				&&g_aObstacle[nCnt].vtxMaxModel.x > pPos->x)
 			{//障害物のx軸の幅の中にいるとき
-				if (g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE <= pPosOld->z
-					&&g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE >= pPos->z)
+				if (g_aObstacle[nCnt].vtxMaxModel.z  <= pPosOld->z
+					&&g_aObstacle[nCnt].vtxMaxModel.z >= pPos->z)
 				{//奥から手前に当たった時
-					pPos->z = g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE;
+					pPos->z = g_aObstacle[nCnt].vtxMaxModel.z;
 					pMove->z = 0.0f;
 					bLand = true;
 					HitObstacle(nCnt, 1);
@@ -213,32 +295,32 @@ bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 					pMove->x = pMove->x*-15.0f;*/
 				}
 
-				if (g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE >= pPosOld->z
-					&&g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE <= pPos->z)
+				if (g_aObstacle[nCnt].vtxMinModel.z >= pPosOld->z
+					&&g_aObstacle[nCnt].vtxMinModel.z <= pPos->z)
 				{
-					pPos->z = g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE;
+					pPos->z = g_aObstacle[nCnt].vtxMinModel.z;
 					pMove->z = 0.0f;
 					bLand = true;
 					HitObstacle(nCnt, 1);
 				}
 			}
 
-			if (g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE < pPos->z
-				&&g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE > pPos->z)
+			if (g_aObstacle[nCnt].vtxMinModel.z < pPos->z
+				&&g_aObstacle[nCnt].vtxMaxModel.z > pPos->z)
 			{
-				if (g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE <= pPosOld->x
-					&&g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE >= pPos->x)
+				if (g_aObstacle[nCnt].vtxMaxModel.x <= pPosOld->x
+					&&g_aObstacle[nCnt].vtxMaxModel.x >= pPos->x)
 				{
-					pPos->x = g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE;
+					pPos->x = g_aObstacle[nCnt].vtxMaxModel.x;
 					pMove->x = 0.0f;
 					bLand = true;
 					HitObstacle(nCnt, 1);
 				}
 
-				if (g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE >= pPosOld->x
-					&&g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE <= pPos->x)
+				if (g_aObstacle[nCnt].vtxMinModel.x >= pPosOld->x
+					&&g_aObstacle[nCnt].vtxMinModel.x <= pPos->x)
 				{
-					pPos->x = g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE;
+					pPos->x = g_aObstacle[nCnt].vtxMinModel.x;
 					pMove->x = 0.0f;
 					bLand = true;
 					HitObstacle(nCnt, 1);
@@ -261,14 +343,13 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 	{
 		if (g_aObstacle[nCnt].bUse == true)
 		{
-
-			if (g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE < pPos->x
-				&&g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE > pPos->x)
+			if (g_aObstacle[nCnt].vtxMinModel.x < pPos->x
+				&&g_aObstacle[nCnt].vtxMaxModel.x > pPos->x)
 			{//障害物のx軸の幅の中にいるとき
-				if (g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE <= pPosOld->z
-					&&g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE >= pPos->z)
+				if (g_aObstacle[nCnt].vtxMaxModel.z <= pPosOld->z
+					&&g_aObstacle[nCnt].vtxMaxModel.z >= pPos->z)
 				{//奥から手前に当たった時
-					pPos->z = g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE;
+					pPos->z = g_aObstacle[nCnt].vtxMaxModel.z;
 					pMove->z = 0.0f;
 					bLand = true;
 
@@ -278,30 +359,30 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 					pMove->x = pMove->x*-15.0f;*/
 				}
 
-				if (g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE >= pPosOld->z
-					&&g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE <= pPos->z)
+				if (g_aObstacle[nCnt].vtxMinModel.z >= pPosOld->z
+					&&g_aObstacle[nCnt].vtxMinModel.z <= pPos->z)
 				{
-					pPos->z = g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE;
+					pPos->z = g_aObstacle[nCnt].vtxMinModel.z;
 					pMove->z = 0.0f;
 					bLand = true;
 				}
 			}
 
-			if (g_aObstacle[nCnt].pos.z - OBSTACLE_SIZE < pPos->z
-				&&g_aObstacle[nCnt].pos.z + OBSTACLE_SIZE > pPos->z)
+			if (g_aObstacle[nCnt].vtxMinModel.z < pPos->z
+				&&g_aObstacle[nCnt].vtxMaxModel.z > pPos->z)
 			{
-				if (g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE <= pPosOld->x
-					&&g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE >= pPos->x)
+				if (g_aObstacle[nCnt].vtxMaxModel.x <= pPosOld->x
+					&&g_aObstacle[nCnt].vtxMaxModel.x >= pPos->x)
 				{
-					pPos->x = g_aObstacle[nCnt].pos.x + OBSTACLE_SIZE;
+					pPos->x = g_aObstacle[nCnt].vtxMaxModel.x;
 					pMove->x = 0.0f;
 					bLand = true;
 				}
 
-				if (g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE >= pPosOld->x
-					&&g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE <= pPos->x)
+				if (g_aObstacle[nCnt].vtxMinModel.x >= pPosOld->x
+					&&g_aObstacle[nCnt].vtxMinModel.x <= pPos->x)
 				{
-					pPos->x = g_aObstacle[nCnt].pos.x - OBSTACLE_SIZE;
+					pPos->x = g_aObstacle[nCnt].vtxMinModel.x;
 					pMove->x = 0.0f;
 					bLand = true;
 				}
