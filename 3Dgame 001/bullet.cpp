@@ -184,7 +184,7 @@ void DrawBullet(void)
 	LPDIRECT3DDEVICE9 pDevice;
 	D3DXMATRIX  mtxTrans, mtxView;			//計算用マトリックス
 
-											//デバイスの取得
+	//デバイスの取得
 	pDevice = GetDevice();
 
 	for (int nCntBullet = 0; nCntBullet < MAX_BULLET; nCntBullet++)

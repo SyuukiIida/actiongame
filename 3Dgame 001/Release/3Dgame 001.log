@@ -1,23 +1,31 @@
-﻿  billboard.cpp
-  bullet.cpp
-  camera.cpp
-  effect.cpp
-  floor.cpp
-  input.cpp
-  light.cpp
-light.cpp(33): warning C4305: '引数': 'double' から 'FLOAT' へ切り詰めます。
-  main.cpp
-  meshfield.cpp
-  model.cpp
-  obstacle.cpp
-obstacle.cpp(268): warning C4101: 'matDef': ローカル変数は 1 度も使われていません。
-  polygon.cpp
-  shadow.cpp
-  wall.cpp
-  コード生成しています。
-  13 of 98 functions (13.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    16 functions had inline decision re-evaluated but remain unchanged
-  コード生成が終了しました。
-  3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\3Dgame 001.exe
-  3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\3Dgame 001.pdb (Full PDB)
+﻿  effect.cpp
+effect.cpp(72): error C2065: 'g_pTextureBillboard': 定義されていない識別子です。
+effect.cpp(74): error C2065: 'g_pTextureBillboard': 定義されていない識別子です。
+effect.cpp(74): error C2227: '->Release' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
+  effect.cpp(74): note: 型は 'unknown-type' です。
+effect.cpp(75): error C2065: 'g_pTextureBillboard': 定義されていない識別子です。
+effect.cpp(79): error C2065: 'g_pVtxBuffBillboard': 定義されていない識別子です。
+effect.cpp(81): error C2065: 'g_pVtxBuffBillboard': 定義されていない識別子です。
+effect.cpp(81): error C2227: '->Release' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
+  effect.cpp(81): note: 型は 'unknown-type' です。
+effect.cpp(82): error C2065: 'g_pVtxBuffBillboard': 定義されていない識別子です。
+effect.cpp(103): error C2065: 'g_pVtxBuffShadow': 定義されていない識別子です。
+effect.cpp(108): error C2065: 'MAX_SHADOW': 定義されていない識別子です。
+effect.cpp(110): error C2065: 'g_Shadow': 定義されていない識別子です。
+effect.cpp(110): error C2228: '.bUse' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(114): error C2065: 'g_mtxWorldShadow': 定義されていない識別子です。
+effect.cpp(117): error C2065: 'g_Shadow': 定義されていない識別子です。
+effect.cpp(117): error C2228: '.rot' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(117): error C2228: '.y' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(117): error C2228: '.x' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(117): error C2228: '.z' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(117): error C2660: 'D3DXMatrixRotationYawPitchRoll': 関数に 1 個の引数を指定できません。
+effect.cpp(118): error C2065: 'g_mtxWorldShadow': 定義されていない識別子です。
+effect.cpp(121): error C2065: 'g_Shadow': 定義されていない識別子です。
+effect.cpp(121): error C2228: '.pos' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(121): error C2228: '.x' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(121): error C2228: '.z' の左側はクラス、構造体、共用体でなければなりません
+effect.cpp(121): error C2660: 'D3DXMatrixTranslation': 関数に 2 個の引数を指定できません。
+effect.cpp(122): error C2065: 'g_mtxWorldShadow': 定義されていない識別子です。
+effect.cpp(125): error C2065: 'g_mtxWorldShadow': 定義されていない識別子です。
+effect.cpp(128): error C2065: 'g_pTextureShadow': 定義されていない識別子です。
