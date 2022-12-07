@@ -26,7 +26,7 @@ void InitFloor(void)
 
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice,
-		"data\\TEXTURE\\block000.jpg",
+		"data\\TEXTURE\\grass001.jpg",
 		&g_pTextureFloor);
 
 	g_Floor.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);

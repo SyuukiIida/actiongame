@@ -7,13 +7,19 @@
 #include "shadow.h"
 #include "camera.h"
 #include "bullet.h"
+#include <string.h>
+#include <stdio.h>
+
 
 //マクロ定義
-#define MAX_OBSRACLE		(2)					//障害物最大数
+#define MAX_OBSRACLE		(3)					//障害物最大数
+#define NAM_OBSRACLE		(3)					//障害物の種類
+
 #define MAX_LIFE			(3)					//障害物体力
+#define TXT_MAX				(5000)				//最大文字数
 
 //グローバル変数
-LPD3DXMESH g_pMeshObstacle[MAX_OBSRACLE] = {};					//メッシュ（頂点情報へのポインタ）
+LPD3DXMESH g_pMeshObstacle[NAM_OBSRACLE] = {};					//メッシュ（頂点情報へのポインタ）
 LPD3DXBUFFER g_pBuffMatObstacle[MAX_OBSRACLE] = {};			//頂点バッファのポインタ
 LPDIRECT3DTEXTURE9 g_apTextureObstacle[10] = {};	//テクスチャへのポインタ
 DWORD g_dwNumMatObstacle[MAX_OBSRACLE] = { 0 };						//マテリアルの数
@@ -43,6 +49,7 @@ void InitObstacle(void)
 		g_aObstacle[nCnt].vtxMinModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].vtxMaxModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aObstacle[nCnt].type = -1;
 		g_aObstacle[nCnt].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].nLife = MAX_LIFE;
 		g_aObstacle[nCnt].bUse = true;
@@ -58,9 +65,13 @@ void InitObstacle(void)
 		pDevice, NULL, &g_pBuffMatObstacle[1],
 		NULL, &g_dwNumMatObstacle[1], &g_pMeshObstacle[1]);
 
-	
-	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+
+	for (int nCnt = 0; nCnt < NAM_OBSRACLE; nCnt++)
 	{
+	while (true)
+	{
+
+	}
 		//頂点数を取得
 		nNumVtx = g_pMeshObstacle[nCnt]->GetNumVertices();
 
@@ -112,24 +123,24 @@ void InitObstacle(void)
 		g_aObstacle[nCnt].vtxMinModel += g_aObstacle[nCnt].pos;
 		g_aObstacle[nCnt].vtxMaxModel += g_aObstacle[nCnt].pos;
 
-		//マテリアル情報に対するポインタを取得
-		pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCnt]->GetBufferPointer();
+			//マテリアル情報に対するポインタを取得
+			pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCnt]->GetBufferPointer();
 
-		for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCnt]; nCntMat++)
-		{
-			if (pMat[nCntMat].pTextureFilename != NULL)
-			{//テクスチャファイルが存在する
+			for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCnt]; nCntMat++)
+			{
+				if (pMat[nCntMat].pTextureFilename != NULL)
+				{//テクスチャファイルが存在する
 
-			 //テクスチャの読み込み
-				D3DXCreateTextureFromFile(pDevice,
-					pMat[nCntMat].pTextureFilename,
-					&g_apTextureObstacle[nCntMat]);
+				 //テクスチャの読み込み
+					D3DXCreateTextureFromFile(pDevice,
+						pMat[nCntMat].pTextureFilename,
+						&g_apTextureObstacle[nCntMat]);
+				}
 			}
-		}
 
-		//影を設定
-		g_nIdxShadowObstacle[nCnt] = SetShadow();
-	}
+			//影を設定
+			g_nIdxShadowObstacle[nCnt] = SetShadow();
+		}
 
 }
 
@@ -139,7 +150,7 @@ void InitObstacle(void)
 void UninitObstacle(void)
 {
 	//メッシュの破棄
-	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+	for (int nCnt = 0; nCnt < NAM_OBSRACLE; nCnt++)
 	{
 		if (g_pMeshObstacle[nCnt] != NULL)
 		{
@@ -149,7 +160,7 @@ void UninitObstacle(void)
 	}
 
 	//バッファの破棄
-	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+	for (int nCnt = 0; nCnt < NAM_OBSRACLE; nCnt++)
 	{
 		if (g_pBuffMatObstacle[nCnt] != NULL)
 		{
@@ -169,38 +180,39 @@ void UpdateObstacle(void)
 
 
 	
-		for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+	{
+		pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCnt]->GetBufferPointer();
+
+		if (g_aObstacle[nCnt].bUse == true)
 		{
-			pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCnt]->GetBufferPointer();
+			
+			//影の位置を設定
+			SetPositionShadow(g_nIdxShadowObstacle[nCnt], g_aObstacle[nCnt].pos);
 
-			if (g_aObstacle[nCnt].bUse == true)
+			switch (g_aObstacle[nCnt].state)
 			{
-				//影の位置を設定
-				SetPositionShadow(g_nIdxShadowObstacle[nCnt], g_aObstacle[nCnt].pos);
+			case ENEMYSTATE_NORMAL:
 
-				switch (g_aObstacle[nCnt].state)
+				break;
+
+			case ENEMYSTATE_DAMAGE:
+				g_aObstacle[nCnt].nCounterState--;
+
+				if (g_aObstacle[nCnt].nCounterState <= 0)
 				{
-				case ENEMYSTATE_NORMAL:
+					g_aObstacle[nCnt].state = ENEMYSTATE_NORMAL;
 
-					break;
-
-				case ENEMYSTATE_DAMAGE:
-					g_aObstacle[nCnt].nCounterState--;
-
-					if (g_aObstacle[nCnt].nCounterState <= 0)
+					for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCnt]; nCntMat++)
 					{
-						g_aObstacle[nCnt].state = ENEMYSTATE_NORMAL;
-
-						for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCnt]; nCntMat++)
-						{
-							//頂点カラーの設定
-							pMat[nCntMat].MatD3D.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
-						}
+						//頂点カラーの設定
+						pMat[nCntMat].MatD3D.Diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
 					}
-					break;
 				}
+				break;
 			}
-		
+		}
+
 	}
 }
 
@@ -289,6 +301,10 @@ void HitObstacle(int nCntObstacle, int nDamage)
 		g_aObstacle[nCntObstacle].state = ENEMYSTATE_DAMAGE;
 		g_aObstacle[nCntObstacle].nCounterState = 50;
 
+		//現在のマテリアルを取得
+		pDevice->GetMaterial(&matDef);
+
+		//マテリアルデータへのポインタを取得
 		pMat = (D3DXMATERIAL*)g_pBuffMatObstacle[nCntObstacle]->GetBufferPointer();
 
 		for (int nCntMat = 0; nCntMat < (int)g_dwNumMatObstacle[nCntObstacle]; nCntMat++)
@@ -297,6 +313,9 @@ void HitObstacle(int nCntObstacle, int nDamage)
 			//マテリアルの設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 		}
+
+		//保存していたマテリアルを戻す
+		pDevice->SetMaterial(&matDef);
 	}
 
 }
@@ -370,7 +389,8 @@ bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 //====================================================================
 //障害物とプレイヤーの当たり判定
 //====================================================================
-bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
+bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove
+	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold)
 {
 	bool bLand = false;
 
@@ -378,8 +398,11 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 	{
 		if (g_aObstacle[nCnt].bUse == true)
 		{
+
 			if (g_aObstacle[nCnt].vtxMinModel.x < pPos->x
-				&&g_aObstacle[nCnt].vtxMaxModel.x > pPos->x)
+				&&g_aObstacle[nCnt].vtxMaxModel.x > pPos->x
+				&&g_aObstacle[nCnt].vtxMinModel.y < pPos->y
+				&&g_aObstacle[nCnt].vtxMaxModel.y > pPos->y)
 			{//障害物のx軸の幅の中にいるとき
 				if (g_aObstacle[nCnt].vtxMaxModel.z <= pPosOld->z
 					&&g_aObstacle[nCnt].vtxMaxModel.z >= pPos->z)
@@ -396,7 +419,7 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 
 				if (g_aObstacle[nCnt].vtxMinModel.z >= pPosOld->z
 					&&g_aObstacle[nCnt].vtxMinModel.z <= pPos->z)
-				{
+				{//手前から奥に当たった時
 					pPos->z = g_aObstacle[nCnt].vtxMinModel.z;
 					pMove->z = 0.0f;
 					bLand = true;
@@ -404,11 +427,13 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 			}
 
 			if (g_aObstacle[nCnt].vtxMinModel.z < pPos->z
-				&&g_aObstacle[nCnt].vtxMaxModel.z > pPos->z)
-			{
+				&&g_aObstacle[nCnt].vtxMaxModel.z > pPos->z
+				&&g_aObstacle[nCnt].vtxMinModel.y < pPos->y
+				&&g_aObstacle[nCnt].vtxMaxModel.y > pPos->y) 
+			{//障害物のz軸の幅の中にいるとき
 				if (g_aObstacle[nCnt].vtxMaxModel.x <= pPosOld->x
 					&&g_aObstacle[nCnt].vtxMaxModel.x >= pPos->x)
-				{
+				{//右から左に当たった時
 					pPos->x = g_aObstacle[nCnt].vtxMaxModel.x;
 					pMove->x = 0.0f;
 					bLand = true;
@@ -416,14 +441,142 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 
 				if (g_aObstacle[nCnt].vtxMinModel.x >= pPosOld->x
 					&&g_aObstacle[nCnt].vtxMinModel.x <= pPos->x)
-				{
+				{//左から右に当たった時
 					pPos->x = g_aObstacle[nCnt].vtxMinModel.x;
 					pMove->x = 0.0f;
+					bLand = true;
+				}
+			}
+
+			if (g_aObstacle[nCnt].vtxMinModel.x < pPos->x
+				&&g_aObstacle[nCnt].vtxMaxModel.x > pPos->x
+				&&g_aObstacle[nCnt].vtxMinModel.z < pPos->z
+				&&g_aObstacle[nCnt].vtxMaxModel.z > pPos->z)
+			{//xz判定の中にいるとき
+				if (g_aObstacle[nCnt].vtxMaxModel.y <= pPosOld->y
+					&&g_aObstacle[nCnt].vtxMaxModel.y >= pPos->y)
+				{//右から左に当たった時
+					pPos->y = g_aObstacle[nCnt].vtxMaxModel.y;
+					pMove->y = 0.0f;
+					bLand = true;
+				}
+
+				if (g_aObstacle[nCnt].vtxMinModel.y >= pPosOld->y
+					&&g_aObstacle[nCnt].vtxMinModel.y <= pPos->y)
+				{
+					pPos->y = g_aObstacle[nCnt].vtxMinModel.y;
+					pMove->y = 0.0f;
 					bLand = true;
 				}
 			}
 		}
 	}
 
+	//for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
+	//{
+	//	if (g_aObstacle[nCnt].bUse == true)
+	//	{
+	//		if (g_aObstacle[nCnt].vtxMinModel.x < vtxMaxModel->x
+	//			&&g_aObstacle[nCnt].vtxMaxModel.x > vtxMinModel->x)
+	//		{//障害物のx軸の幅の中にいるとき
+	//			if (g_aObstacle[nCnt].vtxMaxModel.z <= vtxMinModelold->z
+	//				&&g_aObstacle[nCnt].vtxMaxModel.z >= vtxMinModel->z)
+	//			{//奥から手前に当たった時
+	//				pPos->z = g_aObstacle[nCnt].vtxMaxModel.z - vtxMinModel->z;
+	//				vtxMinModel->z = g_aObstacle[nCnt].vtxMaxModel.z;
+	//				pMove->z = 0.0f;
+	//				bLand = true;
+
+	//				//跳ね返り
+
+	//				/*pMove->z = pMove->z*-15.0f;
+	//				pMove->x = pMove->x*-15.0f;*/
+	//			}
+
+	//			if (g_aObstacle[nCnt].vtxMinModel.z >= vtxMaxModelold->z
+	//				&&g_aObstacle[nCnt].vtxMinModel.z <= vtxMaxModel->z)
+	//			{
+	//				pPos->z = g_aObstacle[nCnt].vtxMinModel.z;
+	//				pMove->z = 0.0f;
+	//				bLand = true;
+	//			}
+	//		}
+
+	//		if (g_aObstacle[nCnt].vtxMinModel.z < vtxMaxModel->z
+	//			&&g_aObstacle[nCnt].vtxMaxModel.z > vtxMinModel->z)
+	//		{
+	//			if (g_aObstacle[nCnt].vtxMaxModel.x <= vtxMinModelold->x
+	//				&&g_aObstacle[nCnt].vtxMaxModel.x >= vtxMinModel->x)
+	//			{
+	//				pPos->x = g_aObstacle[nCnt].vtxMaxModel.x;
+	//				pMove->x = 0.0f;
+	//				bLand = true;
+	//			}
+
+	//			if (g_aObstacle[nCnt].vtxMinModel.x >= vtxMinModelold->x
+	//				&&g_aObstacle[nCnt].vtxMinModel.x <= vtxMinModel->x)
+	//			{
+	//				pPos->x = g_aObstacle[nCnt].vtxMinModel.x;
+	//				pMove->x = 0.0f;
+	//				bLand = true;
+	//			}
+	//		}
+	//	}
+	//}
+
 	return bLand;
+}
+
+//====================================================================
+//障害物の読み込み
+//====================================================================
+void LoadObstacle(void)
+{
+	FILE *pFile;				// ファイルポインタ
+	
+	char aDataSearch[TXT_MAX];	// データ検索用
+
+	// 種類毎の情報のデータファイルを開く
+	pFile = fopen("data\\txt\\FigureData.txt", "r");
+
+	if (pFile != NULL)
+	{//ファイルが開かれた
+		while (1)
+	//	{
+	//		fscanf(pFile, "%s", aDataSearch);		//一行書き込み
+
+	//		//サーチ
+	//		if(strcmp(aDataSearch, "END") == 0) { fclose(pFile); break; }	//ファイルを閉じる	
+	//		if (aDataSearch[0] == '#') { continue; }							// 折り返す
+
+	//		if (strcmp(aDataSearch, "TYPE") == 0) {
+	//			// CHR:敵[00] の種類毎の情報の読み込みを開始
+	//			while (1)
+	//			{
+	//				fscanf(pFile, "%s", aDataSearch); // 検索
+
+	//				if (strcmp(aDataSearch, "TYPE_END") == 0) { pFigure++; break; }										// 読み込みを終了
+	//				else if (strcmp(aDataSearch, "MODEL_PATH") == 0) { fscanf(pFile, "%s", &pFigure->aModelPath); }		// モデルの相対パス
+	//				else if (strcmp(aDataSearch, "FIGURE_TYPE") == 0) { fscanf(pFile, "%d", &pFigure->nType); }			// 敵の種類
+	//				else if (strcmp(aDataSearch, "POS") == 0) {		// 位置
+	//					fscanf(pFile, "%f", &pFigure->pos.x);	// X
+	//					fscanf(pFile, "%f", &pFigure->pos.y);	// Y
+	//					fscanf(pFile, "%f", &pFigure->pos.z);	// Z
+	//				}
+	//				else if (strcmp(aDataSearch, "ROT") == 0) {		// 向き
+	//					fscanf(pFile, "%f", &pFigure->rot.x);	// X
+	//					fscanf(pFile, "%f", &pFigure->rot.y);	// Y
+	//					fscanf(pFile, "%f", &pFigure->rot.z);	// Z
+	//				}
+	//			}
+	//	}
+	//}
+
+	if (pFile == NULL)
+	{// 種類毎の情報のデータファイルが開けなかった場合、
+	 //処理を終了する
+		return;
+	}
+
+	Obstacle *pObstacle = g_aObstacle;
 }

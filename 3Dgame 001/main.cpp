@@ -24,20 +24,11 @@
 
 //マクロ定義
 #define CLASS_NAME			"windowClass"				//ウインドウクラスの名前
-#define WINDOW_NAME			"あくしょん"				//ウインドウの名前
+#define WINDOW_NAME			"3Dgame"				//ウインドウの名前
 //#define SCREEN_WIDTH		(1280)						//ウインドウの幅
 //#define SCREEN_HEIGHT		(720)						//ウインドウの高さ
 //#define ID_TIMER			(131)						//タイマーのID
 //#define TIMER_INTERVAL		(1000/60)					//タイマーの発生感覚（ミリ秒）
-
-
-
-
-
-
-
-
-
 
 //グローバル変数
 LPDIRECT3D9  g_pD3D = NULL;			//Direct3Dオブジェクトへのポインタ
@@ -664,12 +655,14 @@ void DrawPOS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
 	Camera camera= GetCamera();
+	Model model = GetModel();
 	char aStr[256], aStr1[256], aStr2[256];
 
 	//文字列に代入
 	sprintf(&aStr[0], "視点座標,(%0.1f:%0.1f:%0.1f)\n", camera.posR.x, camera.posR.y, camera.posR.z);
 	sprintf(&aStr1[0], "\n視点座標,(%0.1f:%0.2f:%0.1f)", camera.rot.x, camera.rot.y, camera.rot.z);
-	sprintf(&aStr2[0], "\n\nカメラの向き,(%0.2f)",camera.fAngle);
+	sprintf(&aStr2[0], "\n\nモデル位置,(%0.2f:%0.2f:%0.2f:%0.2f)", model.vtxMaxModel.z, model.vtxMaxModel.x
+	, model.vtxMinModel.z, model.vtxMinModel.x);
 
 	//テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));

@@ -32,7 +32,14 @@ void InitModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();		//デバイスの取得
 	D3DXMATERIAL *pMat;	//マテリアルへのポインタ
 
-	g_aModel.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	//頂点情報の変数
+	int nNumVtx;		//頂点数
+	DWORD dwSizeFVF;	//頂点フォーマットのサイズ
+	BYTE *pVtxBuff;		//頂点バッファポインタ
+
+	g_aModel.pos = D3DXVECTOR3(0.0f, 40.0f, 0.0f);
+	g_aModel.vtxMaxModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	g_aModel.vtxMaxModelold = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_aModel.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_aModel.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
@@ -40,6 +47,57 @@ void InitModel(void)
 	D3DXLoadMeshFromX("data\\MODEL\\cat.x", D3DXMESH_SYSTEMMEM,
 		pDevice, NULL, &g_pBuffMatModel,
 		NULL, &g_dwNumMatModel, &g_pMeshModel);
+
+	//頂点数を取得
+	nNumVtx = g_pMeshModel->GetNumVertices();
+
+	//頂点フォーマット
+	dwSizeFVF = D3DXGetFVFVertexSize(g_pMeshModel->GetFVF());
+
+	//頂点バッファロック
+	g_pMeshModel->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
+
+	for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
+	{
+		D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVtxBuff;
+
+		if (g_aModel.vtxMinModel.x > vtx.x)
+		{
+			g_aModel.vtxMinModel.x = vtx.x;
+		}
+
+		if (g_aModel.vtxMaxModel.x < vtx.x)
+		{
+			g_aModel.vtxMaxModel.x = vtx.x;
+		}
+
+		if (g_aModel.vtxMinModel.y > vtx.y)
+		{
+			g_aModel.vtxMinModel.y = vtx.y;
+		}
+
+		if (g_aModel.vtxMaxModel.y < vtx.y)
+		{
+			g_aModel.vtxMaxModel.y = vtx.y;
+		}
+
+		if (g_aModel.vtxMinModel.z > vtx.z)
+		{
+			g_aModel.vtxMinModel.z = vtx.z;
+		}
+
+		if (g_aModel.vtxMaxModel.z < vtx.z)
+		{
+			g_aModel.vtxMaxModel.z = vtx.z;
+		}
+
+		pVtxBuff += dwSizeFVF;
+	}
+
+	g_pMeshModel->UnlockVertexBuffer();
+
+	g_aModel.vtxMinModel += g_aModel.pos;
+	g_aModel.vtxMaxModel += g_aModel.pos;
 
 	//マテリアル情報に対するポインタを取得
 	pMat= (D3DXMATERIAL*)g_pBuffMatModel->GetBufferPointer();
@@ -87,9 +145,10 @@ void UpdateModel(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();		//デバイスの取得
 
 	g_aModel.posold = g_aModel.pos;					//現在の位置を保存
-
+	g_aModel.vtxMaxModelold = g_aModel.vtxMaxModel;
+	g_aModel.vtxMinModelold = g_aModel.vtxMinModel;
+	
 	Camera camera = GetCamera();
-
 
 	if (GetKeyboardPress(DIK_LEFT) == true)
 	{//A(左)キーが押された
@@ -129,8 +188,12 @@ void UpdateModel(void)
 		SetBullet();
 	}
 
+	//g_aModel.move.y -= 0.001f;
+
 	//位置を更新
 	g_aModel.pos += g_aModel.move;
+	g_aModel.vtxMaxModel += g_aModel.move;
+	g_aModel.vtxMinModel += g_aModel.move;
 
 	//感性を追加
 	g_aModel.move.x += (0.0f - g_aModel.move.x) * 0.5f;
@@ -156,7 +219,8 @@ void UpdateModel(void)
 	//	g_aModel.pos.x = -189.0f;
 	//}
 
-	if(CollisionObstaclePlayer(&g_aModel.pos, &g_aModel.posold, &g_aModel.move)==true)
+	if (CollisionObstaclePlayer(&g_aModel.pos, &g_aModel.posold, &g_aModel.move,&g_aModel.vtxMaxModel
+		,&g_aModel.vtxMinModel,&g_aModel.vtxMaxModelold, &g_aModel.vtxMinModelold) == true)
 	{
 
 	}

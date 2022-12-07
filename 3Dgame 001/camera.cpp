@@ -16,7 +16,7 @@ int g_nCounterAnimCamera;
 
 void InitCamera(void)
 {
-	g_camera.posV = D3DXVECTOR3(0.0f, 100.0f, -100);		//視点
+	g_camera.posV = D3DXVECTOR3(0.0f, 100.0f, -200);		//視点
 	g_camera.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			//注視点
 	g_camera.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);			//上方向へのベクトル
 	g_camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);

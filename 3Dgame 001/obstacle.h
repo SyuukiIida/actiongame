@@ -41,6 +41,8 @@ void UpdateObstacle(void);
 void DrawObstacle(void);
 void HitObstacle(int nCntObstacle, int nDamage);
 bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove);
-bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove);
+bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove
+	,D3DXVECTOR3 *vtxMaxModel,D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold);
+void LoadObstacle(void);
 
 #endif 
