@@ -137,7 +137,7 @@ void UpdateBullet(void)
 			g_aBullet[nCntBllet].move.x += (0.0f - g_aBullet[nCntBllet].move.x) * 0.50f;
 			g_aBullet[nCntBllet].move.z += (0.0f - g_aBullet[nCntBllet].move.z) * 0.5f;
 
-			if (CollisionWall(&g_aBullet[nCntBllet].pos, &g_aBullet[nCntBllet].posold, &g_aBullet[nCntBllet].move) == true)
+			if (CollisionWallBullet(&g_aBullet[nCntBllet].pos, &g_aBullet[nCntBllet].posold, &g_aBullet[nCntBllet].move) == true)
 			{
 				g_aBullet[nCntBllet].bUse = false;
 

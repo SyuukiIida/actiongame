@@ -145,10 +145,8 @@ void DrawWall(void)
 	}
 }
 
-//====================================================================
-//•Ç‚Ì“–‚½‚è”»’è
-//====================================================================
-bool CollisionWall(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
+
+bool CollisionWallBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
 {
 	bool bLand = false;			//“–‚½‚Á‚½‚©‚Ç‚¤‚©
 
@@ -189,6 +187,71 @@ bool CollisionWall(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove)
 			&&g_Wall[nCnt].pos.x - 200.0f >= pPos->x)
 		{
 			pPos->x = g_Wall[nCnt].pos.x - 200.0f;
+			pMove->x = 0.0f;
+			bLand = true;
+		}
+	}
+
+
+	return bLand;
+}
+
+//====================================================================
+//•Ç‚Ì“–‚½‚è”»’è
+//====================================================================
+bool CollisionWallPlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove
+	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold)
+{
+	bool bLand = false;			//“–‚½‚Á‚½‚©‚Ç‚¤‚©
+
+	for (int nCnt = 0; nCnt < MAX_WALL; nCnt++)
+	{
+
+		if (g_Wall[nCnt].pos.z + 200.0f >= vtxMaxModelold->z
+			&&g_Wall[nCnt].pos.z + 200.0f <= vtxMaxModel->z)
+		{
+			pPos->z = g_Wall[nCnt].pos.z + 200.0f - (vtxMaxModel->z - pPos->z);
+			vtxMinModel->z = g_Wall[nCnt].pos.z + 200.0f - (vtxMaxModel->z - vtxMinModel->z);
+			vtxMaxModel->z = g_Wall[nCnt].pos.z + 200.0f;			
+			pMove->z = 0.0f;
+			bLand = true;
+
+			//’µ‚Ë•Ô‚è
+
+			/*pMove->z = pMove->z*-15.0f;
+			pMove->x = pMove->x*-15.0f;*/
+		}
+
+		if (g_Wall[nCnt].pos.z - 200.0f <= vtxMinModelold->z
+			&&g_Wall[nCnt].pos.z - 200.0f >= vtxMinModel->z)
+		{
+			//pPos->z = g_Wall[nCnt].pos.z - 200.0f;
+
+			pPos->z = g_Wall[nCnt].pos.z - 200.0f - (vtxMinModel->z - pPos->z);
+			vtxMaxModel->z = g_Wall[nCnt].pos.z - 200.0f - (vtxMinModel->z - vtxMaxModel->z);
+			vtxMinModel->z = g_Wall[nCnt].pos.z - 200.0f;
+
+			pMove->z = 0.0f;
+			bLand = true;
+		}
+
+
+		if (g_Wall[nCnt].pos.x + 200.0f >= vtxMaxModelold->x
+			&&g_Wall[nCnt].pos.x + 200.0f <= vtxMaxModel->x)
+		{
+			pPos->x = g_Wall[nCnt].pos.x + 200.0f - (vtxMaxModel->x - pPos->x);
+			vtxMinModel->x = g_Wall[nCnt].pos.x + 200.0f - (vtxMaxModel->x - vtxMinModel->x);
+			vtxMaxModel->x = g_Wall[nCnt].pos.x + 200.0f;
+			pMove->x = 0.0f;
+			bLand = true;
+		}
+
+		if (g_Wall[nCnt].pos.x - 200.0f <= vtxMinModelold->x
+			&&g_Wall[nCnt].pos.x - 200.0f >= vtxMinModel->x)
+		{
+			pPos->x = g_Wall[nCnt].pos.x - 200.0f - (vtxMinModel->x - pPos->x);
+			vtxMaxModel->x = g_Wall[nCnt].pos.x - 200.0f - (vtxMinModel->x - vtxMaxModel->x);
+			vtxMinModel->x = g_Wall[nCnt].pos.x - 200.0f;
 			pMove->x = 0.0f;
 			bLand = true;
 		}

@@ -31,6 +31,7 @@ typedef struct
 	OBSTACLESTATE state;					//状態
 	int nCounterState;						//状態管理カウンター
 	int nLife;								//体力
+	int type = -1;							//種類
 	bool bUse;								//使っているか
 }Obstacle;
 

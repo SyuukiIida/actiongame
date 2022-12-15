@@ -155,7 +155,9 @@
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="effect.cpp" />
+    <ClCompile Include="fade.cpp" />
     <ClCompile Include="floor.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,7 +165,13 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="polygon.cpp" />
+    <ClCompile Include="result.cpp" />
+    <ClCompile Include="resultjudge.cpp" />
     <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="title.cpp" />
+    <ClCompile Include="titlelogo.cpp" />
+    <ClCompile Include="titolebg.cpp" />
+    <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +179,9 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="effect.h" />
+    <ClInclude Include="fade.h" />
     <ClInclude Include="floor.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
@@ -179,7 +189,13 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="polygon.h" />
+    <ClInclude Include="result.h" />
+    <ClInclude Include="resultjudge.h" />
     <ClInclude Include="shadow.h" />
+    <ClInclude Include="title.h" />
+    <ClInclude Include="titlebg.h" />
+    <ClInclude Include="titolelogo.h" />
+    <ClInclude Include="tutorial.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

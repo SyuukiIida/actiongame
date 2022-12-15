@@ -10,15 +10,13 @@
 #include "input.h"
 #include "camera.h"
 #include "light.h"
-#include "polygon.h"
 #include "model.h"
-#include "shadow.h"
-#include "billboard.h"
-#include "wall.h"
-#include "floor.h"
-#include "bullet.h"
-#include "meshfield.h"
-#include "obstacle.h"
+#include "title.h"
+#include "result.h"
+#include "tutorial.h"
+#include "fade.h"
+#include "game.h"
+
 
 
 
@@ -388,39 +386,19 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWinbow)
 		return E_FAIL;
 	}
 
-	////モードの設定
-	//SetMode(g_mode);
-	////フェード設定
-	//InitFade(g_mode);
+	
+
+	//モードの設定
+	SetMode(g_mode);
+	//フェード設定
+	InitFade(g_mode);
 	
 	//ポリゴンの初期化処理
 	//InitPolygon();
 
-	//壁の初期化処理
-	InitWall();
-
-	//床の初期化処理
-	InitFloor();
-	//InitMeshfield();
-
-	//影の初期化処理
-	InitShadow();
-
-	//ビルボード初期化処理
-	InitBillboard();
-
-	//モデルの初期化処理
-	InitModel();
-	InitObstacle();
-
-	//弾の初期化処理
-	InitBullet();
-
-	//カメラの初期化処理
-	InitCamera();
 	
-	//ライトの初期化処理
-	InitLight();
+
+	
 
 	return S_OK;
 }
@@ -432,49 +410,27 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWinbow)
 
 void Uninit(void)
 {
-	////タイトル画面の終了
-	//UninitTitle();
+	//タイトル画面の終了
+	UninitTitle();
 
-	////チュートリアル画面の終了
-	//UninitTutorial();
+	//チュートリアル画面の終了
+	UninitTutorial();
 
-	////ゲーム画面の終了
-	//UninitGame();
+	//ゲーム画面の終了
+	UninitGame();
 
-	////リザルト画面の終了
-	//UninitResult();
+	//リザルト画面の終了
+	UninitResult();
 
-	////フェード処理
-	//UninitFade();
+	//フェード処理
+	UninitFade();
 
 	//ポリゴンの終了処理
 	//UninitPolygon();
 
-	//床の終了処理
-	UninitFloor();
-	//UninitMeshfield();
+	
 
-	//壁の終了処理
-	UninitWall();
-
-	//ビルボード終了処理
-	UninitBillboard();
-
-	//弾の終了処理
-	UninitBullet();
-
-	//影の終了処理
-	UninitShadow();
-
-	//モデルの終了処理
-	UninitModel();
-	UninitObstacle();
-
-	//カメラの終了処理
-	UninitCamera();
-
-	//ライトの終了処理
-	UninitLight();
+	
 
 	//キーボード終了処理
 	UninitKeyboard();
@@ -512,49 +468,27 @@ void Updata(void)
 	//ポリゴンの更新処理
 	//UpdatePolygon();
 
-	//床の更新処理
-	UpdateFloor();
-	//UpdateMeshfield();
+	
 
-	//壁の更新処理
-	UpdateWall();
+	
 
-	//ビルボード更新処理
-	UpdateBillboard();
-
-	//モデルの更新処理
-	UpdateModel();
-	UpdateObstacle();
-
-	//弾の更新処理
-	UpdateBullet();
-
-	//影の更新処理
-	UpdateShadow();
-
-	//カメラの更新処理
-	UpdateCamera();
-
-	//ライトの更新処理
-	UpdateLight();
-
-	//switch (g_mode)
-	//{
-	//case MODE_TITLE:			//タイトル画面
-	//	UpdateTitle();
-	//	break;
-	//case MODE_TUTORIAL:			//チュートリアル画面
-	//	UpdateTutorial();
-	//	break;
-	//case MODE_GAME:				//ゲーム画面
-	//	UpdateGame();
-	//	break;
-	//case MODE_RESULT:			//リザルト画面
-	//	UpdateResult();
-	//	break;
-	//}
-	////フェードの更新処理
-	//UpdateFade();
+	switch (g_mode)
+	{
+	case MODE_TITLE:			//タイトル画面
+		UpdateTitle();
+		break;
+	case MODE_TUTORIAL:			//チュートリアル画面
+		UpdateTutorial();
+		break;
+	case MODE_GAME:				//ゲーム画面
+		UpdateGame();
+		break;
+	case MODE_RESULT:			//リザルト画面
+		UpdateResult();
+		break;
+	}
+	//フェードの更新処理
+	UpdateFade();
 }
 
 //====================================================================
@@ -570,48 +504,28 @@ void Draw(void)
 	if (SUCCEEDED(pDevice->BeginScene()))
 	{//描画開始が成功した場合
 
-		//switch (g_mode)
-		//{
-		//case MODE_TITLE:			//タイトル画面
-		//	DrawTitle();
-		//	break;
-		//case MODE_TUTORIAL:			//チュートリアル画面
-		//	DrawTutorial();
-		//	break;
-		//case MODE_GAME:				//ゲーム画面
-		//	DrawGame();
-		//	break;
-		//case MODE_RESULT:			//リザルト画面
-		//	DrawResult();
-		//	break;
-		//}
-		////フェードの更新処理
-		//DrawFade();
+		switch (g_mode)
+		{
+		case MODE_TITLE:			//タイトル画面
+			DrawTitle();
+			break;
+		case MODE_TUTORIAL:			//チュートリアル画面
+			DrawTutorial();
+			break;
+		case MODE_GAME:				//ゲーム画面
+			DrawGame();
+			break;
+		case MODE_RESULT:			//リザルト画面
+			DrawResult();
+			break;
+		}
+		//フェードの更新処理
+		DrawFade();
 
 		//ポリゴンの描画処理
 		//DrawPolygon();
 
-		//床の更新処理
-		DrawFloor();
-		//DrawMeshfield();
-
-		//壁の描画処理
-		DrawWall();
-
 		
-
-		//モデルの描画処理
-		DrawModel();
-		DrawObstacle();
-
-		//影の描画処理
-		DrawShadow();
-
-		//ビルボード描画処理
-		DrawBillboard();
-
-		//弾の描画処理
-		DrawBullet();
 
 		//カメラの描画処理
 		SetCamera();
@@ -656,58 +570,63 @@ void DrawPOS(void)
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
 	Camera camera= GetCamera();
 	Model model = GetModel();
-	char aStr[256], aStr1[256], aStr2[256];
+	char aStr[256], aStr1[256], aStr2[256], aStr3[256];
 
 	//文字列に代入
-	sprintf(&aStr[0], "視点座標,(%0.1f:%0.1f:%0.1f)\n", camera.posR.x, camera.posR.y, camera.posR.z);
+	sprintf(&aStr[0], "視点座標,(%0.2f:%0.1f:%0.1f)\n", model.rot.y, camera.posR.y, camera.posR.z);
 	sprintf(&aStr1[0], "\n視点座標,(%0.1f:%0.2f:%0.1f)", camera.rot.x, camera.rot.y, camera.rot.z);
 	sprintf(&aStr2[0], "\n\nモデル位置,(%0.2f:%0.2f:%0.2f:%0.2f)", model.vtxMaxModel.z, model.vtxMaxModel.x
 	, model.vtxMinModel.z, model.vtxMinModel.x);
+	sprintf(&aStr3[0], "\n\n\nモデル位置,(%0.2f:%0.2f:%0.2f)", model.pos.x, model.pos.y, model.pos.z);
 
 	//テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 	g_pFont->DrawText(NULL, &aStr1[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 	g_pFont->DrawText(NULL, &aStr2[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	g_pFont->DrawText(NULL, &aStr3[0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 void SetMode(MODE mode)
 {
+	RESULT Result;
 
-	////現在の画面（モード）の終了処理
-	//switch (g_mode)
-	//{
-	//case MODE_TITLE:			//タイトル画面
-	//	UninitTitle();
-	//	break;
-	//case MODE_TUTORIAL:			//チュートリアル画面
-	//	UninitTutorial();
-	//	break;
-	//case MODE_GAME:				//ゲーム画面
-	//	UninitGame();
-	//	break;
-	//case MODE_RESULT:			//リザルト画面
-	//	UninitResult();
-	//	break;
-	//}
+	Result = GetResult();
 
-	////新しい画面（モード）の初期化処理
-	//switch (mode)
-	//{
-	//case MODE_TITLE:			//タイトル画面
-	//	InitTitle();
-	//	break;
-	//case MODE_TUTORIAL:			//チュートリアル画面
-	//	InitTutorial();
-	//	break;
-	//case MODE_GAME:				//ゲーム画面
-	//	InitGame();
-	//	break;
-	//case MODE_RESULT:			//リザルト画面
-	//	InitResult(Result);
-	//	break;
-	//}
+	//現在の画面（モード）の終了処理
+	switch (g_mode)
+	{
+	case MODE_TITLE:			//タイトル画面
+		UninitTitle();
+		break;
+	case MODE_TUTORIAL:			//チュートリアル画面
+		UninitTutorial();
+		break;
+	case MODE_GAME:				//ゲーム画面
+		UninitGame();
+		break;
+	case MODE_RESULT:			//リザルト画面
+		UninitResult();
+		break;
+	}
 
-	//g_mode = mode;			//現在の画面（モード）を切り替える
+	//新しい画面（モード）の初期化処理
+	switch (mode)
+	{
+	case MODE_TITLE:			//タイトル画面
+		InitTitle();
+		break;
+	case MODE_TUTORIAL:			//チュートリアル画面
+		InitTutorial();
+		break;
+	case MODE_GAME:				//ゲーム画面
+		InitGame();
+		break;
+	case MODE_RESULT:			//リザルト画面
+		InitResult(Result);
+		break;
+	}
+
+	g_mode = mode;			//現在の画面（モード）を切り替える
 
 }
 

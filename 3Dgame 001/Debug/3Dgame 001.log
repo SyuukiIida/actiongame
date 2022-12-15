@@ -1,35 +1,3 @@
-﻿  obstacle.cpp
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(52): error C2039: 'type': 'Obstacle' のメンバーではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.h(25): note: 'Obstacle' の宣言を確認してください
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(558): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(559): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(559): error C2227: '->aModelPath' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(559): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(560): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(560): error C2227: '->nType' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(560): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(562): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(562): error C2227: '->pos' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(562): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(562): error C2228: '.x' の左側はクラス、構造体、共用体でなければなりません
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(563): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(563): error C2227: '->pos' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(563): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(563): error C2228: '.y' の左側はクラス、構造体、共用体でなければなりません
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(564): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(564): error C2227: '->pos' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(564): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(564): error C2228: '.z' の左側はクラス、構造体、共用体でなければなりません
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(567): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(567): error C2227: '->rot' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(567): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(567): error C2228: '.x' の左側はクラス、構造体、共用体でなければなりません
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(568): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(568): error C2227: '->rot' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(568): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(568): error C2228: '.y' の左側はクラス、構造体、共用体でなければなりません
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(569): error C2065: 'pFigure': 定義されていない識別子です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(569): error C2227: '->rot' : 左側がクラス、構造体、共用体、ジェネリック型へのポインターではありません。
-  c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(569): note: 型は 'unknown-type' です。
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(569): error C2228: '.z' の左側はクラス、構造体、共用体でなければなりません
-c:\users\student\desktop\githudaction\3dgame 001\obstacle.cpp(534): fatal error C1075: 左側の 中かっこ '{' に対応するものがファイルの最後まで検出されませんでした。
+﻿  main.cpp
+  3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\Debug\3Dgame 001.exe
+  3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\Debug\3Dgame 001.pdb (Full PDB)

@@ -10,6 +10,9 @@
 #include "obstacle.h"
 #include "wall.h"
 
+//マクロ定義
+#define GAUGE				(0.13f)				//ゲージ増加量
+
 //グローバル変数
 LPD3DXMESH g_pMeshModel = NULL;					//メッシュ（頂点情報へのポインタ）
 LPD3DXBUFFER g_pBuffMatModel = NULL;			//頂点バッファのポインタ
@@ -37,7 +40,7 @@ void InitModel(void)
 	DWORD dwSizeFVF;	//頂点フォーマットのサイズ
 	BYTE *pVtxBuff;		//頂点バッファポインタ
 
-	g_aModel.pos = D3DXVECTOR3(0.0f, 40.0f, 0.0f);
+	g_aModel.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_aModel.vtxMaxModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_aModel.vtxMaxModelold = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	g_aModel.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -184,9 +187,11 @@ void UpdateModel(void)
 
 	if (GetKeyboardTrigger(DIK_SPACE) == true)
 	{//SPACEキーが押された
-	 //弾の設定
-		SetBullet();
+	 //進行方向の設定
+		//SetGauge();
+
 	}
+
 
 	//g_aModel.move.y -= 0.001f;
 
@@ -194,6 +199,9 @@ void UpdateModel(void)
 	g_aModel.pos += g_aModel.move;
 	g_aModel.vtxMaxModel += g_aModel.move;
 	g_aModel.vtxMinModel += g_aModel.move;
+
+	//g_aModel.vtxMaxModel = g_aModel.pos + g_aModel.vtxMaxModel;
+	//g_aModel.vtxMinModel = g_aModel.pos + g_aModel.vtxMinModel;
 
 	//感性を追加
 	g_aModel.move.x += (0.0f - g_aModel.move.x) * 0.5f;
@@ -225,7 +233,8 @@ void UpdateModel(void)
 
 	}
 
-	if (CollisionWall(&g_aModel.pos, &g_aModel.posold, &g_aModel.move) == true)
+	if (CollisionWallPlayer(&g_aModel.pos, &g_aModel.posold, &g_aModel.move, &g_aModel.vtxMaxModel
+		, &g_aModel.vtxMinModel, &g_aModel.vtxMaxModelold, &g_aModel.vtxMinModelold) == true)
 	{
 
 	}
@@ -306,3 +315,21 @@ Model GetModel(void)
 {
 	return g_aModel;
 }
+
+//====================================================================
+//モデルの移動量設定処理
+//====================================================================
+//float SetGauge(void)
+//{
+//	g_aModel.gauge = 0;
+//
+//	while (GetKeyboardPress(DIK_SPACE) == false)
+//	{
+//		if (g_aModel.gauge > 0 && g_aModel.gauge < 10.0f)
+//		{
+//			g_aModel.gauge += GAUGE;
+//		}
+//	
+//
+//	}
+//}
