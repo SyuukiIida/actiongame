@@ -1,6 +1,4 @@
 ﻿  shootarrow.cpp
-  player.cpp
-  game.cpp
-  コードを生成中...
+cl : コマンド ライン warning D9028: 簡易リビルド時のエラーです、通常のビルドに戻します
   3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\Debug\3Dgame 001.exe
   3Dgame 001.vcxproj -> C:\Users\student\Desktop\GitHudAction\3Dgame 001\Debug\3Dgame 001.pdb (Full PDB)

@@ -3,6 +3,7 @@
 #include "input.h"
 #include "main.h"
 #include "shootarrow.h"
+#include "player.h"
 
 //グローバル変数
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffShootArrow = NULL;		//頂点バッファのポインタ
@@ -92,7 +93,10 @@ void UninitShootArrow(void)
 //====================================================================
 void UpdateShootArrow(void)
 {
+	Player player;
+	player = GetPlayer();
 
+	g_ShootArrow.rot.y = player.rot.y;
 }
 
 //====================================================================
