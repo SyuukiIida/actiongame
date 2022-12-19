@@ -1,6 +1,8 @@
 #include "main.h"
-#include "result.h"
 #include "input.h"
+#include "resultjudge.h"
+#include "game.h"
+
 
 //マクロ定義
 #define NUM_JUDGE				(2)			//	ジャッチの数
@@ -14,9 +16,9 @@ RESULT g_result;
 //ポリゴンの初期化処理
 //====================================================================
 
-void InitResultJudge(RESULT Result)
+void InitResultJudge()
 {
-	g_result = Result;
+	g_result = GetResult();
 
 	LPDIRECT3DDEVICE9 pDevice;
 	//デバイスの取得

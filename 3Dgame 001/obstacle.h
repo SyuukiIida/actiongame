@@ -2,14 +2,13 @@
 #define _OBSTACLE_H_
 
 //マクロ定義
-#define OBSTACLE_SIZE		(20)		//障害物の当たる範囲
 
 //判定する座標
 typedef enum
 {
-	COLLISIONBLOCK_Y = 0,		//Yの当たり判定をする
-	COLLISIONBLOCK_X,			//Xの当たり判定をする
-	COLLISIONBLOCK_MAX
+	COLLISIONOBSTACLE_Z = 0,		//Yの当たり判定をする
+	COLLISIONOBSTACLE_X,			//Xの当たり判定をする
+	COLLISIONOBSTACLE_MAX
 }COLLISIONOBSTACLE;
 
 //障害物の状態
@@ -43,7 +42,8 @@ void DrawObstacle(void);
 void HitObstacle(int nCntObstacle, int nDamage);
 bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove);
 bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove
-	,D3DXVECTOR3 *vtxMaxModel,D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold);
+	,D3DXVECTOR3 *vtxMaxModel,D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold
+	, COLLISIONOBSTACLE collisionObstacle);
 void LoadObstacle(void);
 
 #endif 

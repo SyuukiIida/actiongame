@@ -1,6 +1,14 @@
 #ifndef _WALL_H_
 #define _WALL_H_
 
+//îªíËÇ∑ÇÈç¿ïW
+typedef enum
+{
+	COLLISIONWALL_Z = 0,		//YÇÃìñÇΩÇËîªíËÇÇ∑ÇÈ
+	COLLISIONWALL_X,			//XÇÃìñÇΩÇËîªíËÇÇ∑ÇÈ
+	COLLISIONWALL_MAX
+}COLLISIONWALL;
+
 //è∞ÇÃç\ë¢ëÃÇíËã`
 typedef struct
 {
@@ -16,7 +24,8 @@ void UpdateWall(void);
 void DrawWall(void);
 bool CollisionWallBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove);
 bool CollisionWallPlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove
-	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold);
+	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold
+	, COLLISIONWALL collisionWall);
 
 #endif 
 

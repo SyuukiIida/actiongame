@@ -10,7 +10,7 @@
 #include "input.h"
 #include "camera.h"
 #include "light.h"
-#include "model.h"
+#include "player.h"
 #include "title.h"
 #include "result.h"
 #include "tutorial.h"
@@ -569,11 +569,11 @@ void DrawPOS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
 	Camera camera= GetCamera();
-	Model model = GetModel();
+	Player model = GetPlayer();
 	char aStr[256], aStr1[256], aStr2[256], aStr3[256];
 
 	//文字列に代入
-	sprintf(&aStr[0], "視点座標,(%0.2f:%0.1f:%0.1f)\n", model.rot.y, camera.posR.y, camera.posR.z);
+	sprintf(&aStr[0], "視点座標,(%0.2f:%0.1f:%0.1f)\n", model.rot.y, model.gauge, camera.posR.z);
 	sprintf(&aStr1[0], "\n視点座標,(%0.1f:%0.2f:%0.1f)", camera.rot.x, camera.rot.y, camera.rot.z);
 	sprintf(&aStr2[0], "\n\nモデル位置,(%0.2f:%0.2f:%0.2f:%0.2f)", model.vtxMaxModel.z, model.vtxMaxModel.x
 	, model.vtxMinModel.z, model.vtxMinModel.x);
@@ -588,10 +588,6 @@ void DrawPOS(void)
 
 void SetMode(MODE mode)
 {
-	RESULT Result;
-
-	Result = GetResult();
-
 	//現在の画面（モード）の終了処理
 	switch (g_mode)
 	{
@@ -622,7 +618,7 @@ void SetMode(MODE mode)
 		InitGame();
 		break;
 	case MODE_RESULT:			//リザルト画面
-		InitResult(Result);
+		InitResult();
 		break;
 	}
 

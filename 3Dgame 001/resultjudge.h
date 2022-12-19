@@ -2,7 +2,7 @@
 #define _RESULTJUDGE_H_
 
 //プロトタイプ宣言
-void InitResultJudge(RESULT Result);
+void InitResultJudge(void);
 void UninitResultJudge(void);
 void UpdateResultJudge(void);
 void DrawResultJudge(void);

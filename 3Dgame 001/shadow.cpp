@@ -49,10 +49,10 @@ void InitShadow(void)
 	for (int nCntShadow = 0; nCntShadow < MAX_SHADOW; nCntShadow++,pVtx += 4)
 	{
 		//頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-20.0f/*+(20.0f*nCntShadow)*/, 0.0f, 20.0f);
-		pVtx[1].pos = D3DXVECTOR3(20.0f /*+ (20.0f*nCntShadow)*/, 0.0f, 20.0f);
-		pVtx[2].pos = D3DXVECTOR3(-20.0f /*+ (20.0f*nCntShadow)*/, 0.0f, -20.0f);
-		pVtx[3].pos = D3DXVECTOR3(20.0f /*+ (20.0f*nCntShadow)*/, 0.0f, -20.0f);
+		pVtx[0].pos = D3DXVECTOR3(-10.0f/*+(20.0f*nCntShadow)*/, 0.0f, 10.0f);
+		pVtx[1].pos = D3DXVECTOR3(10.0f /*+ (20.0f*nCntShadow)*/, 0.0f, 10.0f);
+		pVtx[2].pos = D3DXVECTOR3(-10.0f /*+ (20.0f*nCntShadow)*/, 0.0f, -10.0f);
+		pVtx[3].pos = D3DXVECTOR3(10.0f /*+ (20.0f*nCntShadow)*/, 0.0f, -10.0f);
 
 		//法線ベクトルの設定
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);

@@ -1,6 +1,10 @@
 #ifndef _MODEL_H_
 #define _MODEL_H_
 
+//マクロ定義
+#define MAX_GAUGE			(25.0f)				//ゲージ最大値
+#define COOLTIME			(1)					//ショットクールタイム
+
 //モデル構造体の定義
 typedef struct
 {
@@ -13,15 +17,13 @@ typedef struct
 	D3DXVECTOR3 rot;							//向き
 	D3DXVECTOR3 move;							//移動量
 	float gauge;								//ゲージ量
-	D3DXMATRIX mtxWorld;						//ワールドマトリックス
-}Model;
+}Player;
 
 //プロトタイプ宣言
-void InitModel(void);
-void UninitModel(void);
-void UpdateModel(void);
-void DrawModel(void);
-Model GetModel(void);
-float SetGauge(void);
+void InitPlayer(void);
+void UninitPlayer(void);
+void UpdatePlayer(void);
+void DrawPlayer(void);
+Player GetPlayer(void);
 
 #endif 

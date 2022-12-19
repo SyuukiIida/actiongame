@@ -1,6 +1,8 @@
 #ifndef _FLOOR_H_
 #define _FLOOR_H_
 
+#define FLOOR_SIZE			(300)			//’n–Ê‚Ì‘å‚«‚³
+
 //°‚Ì\‘¢‘Ì‚ğ’è‹`
 typedef struct
 {

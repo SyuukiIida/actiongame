@@ -11,5 +11,6 @@ void UninitKeyboard(void);
 void UpdateKeyboard(void);
 bool GetKeyboardPress(int nKey);
 bool GetKeyboardTrigger(int nKey);
+bool GetKeyboardRelease(int nKey);
 
 #endif

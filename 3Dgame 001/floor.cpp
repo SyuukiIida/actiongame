@@ -10,6 +10,8 @@
 #include "main.h"
 #include "floor.h"
 
+
+
 //グローバル変数
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffFloor = NULL;		//頂点バッファのポインタ
 LPDIRECT3DTEXTURE9 g_pTextureFloor = NULL;			//テクスチャのポインタ
@@ -39,10 +41,10 @@ void InitFloor(void)
 	g_pVtxBuffFloor->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(-200.0f,0.0f, 200.0f);
-	pVtx[1].pos = D3DXVECTOR3(200.0f, 0.0f, 200.0f);
-	pVtx[2].pos = D3DXVECTOR3(-200.0f, 0.0f, -200.0f);
-	pVtx[3].pos = D3DXVECTOR3(200.0f, 0.0f, -200.0f);
+	pVtx[0].pos = D3DXVECTOR3(-FLOOR_SIZE,0.0f, FLOOR_SIZE);
+	pVtx[1].pos = D3DXVECTOR3(FLOOR_SIZE, 0.0f, FLOOR_SIZE);
+	pVtx[2].pos = D3DXVECTOR3(-FLOOR_SIZE, 0.0f, -FLOOR_SIZE);
+	pVtx[3].pos = D3DXVECTOR3(FLOOR_SIZE, 0.0f, -FLOOR_SIZE);
 
 	//rhwの設定
 	pVtx[0].nor =D3DXVECTOR3(0.0f,1.0f,0.0f);
@@ -58,9 +60,9 @@ void InitFloor(void)
 
 	//テクスチャ頂点座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(4.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 4.0f);
-	pVtx[3].tex = D3DXVECTOR2(4.0f, 4.0f);
+	pVtx[1].tex = D3DXVECTOR2(6.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 6.0f);
+	pVtx[3].tex = D3DXVECTOR2(6.0f, 6.0f);
 
 	g_pVtxBuffFloor->Unlock();
 }

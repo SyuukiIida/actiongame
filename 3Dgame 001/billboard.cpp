@@ -17,6 +17,8 @@ LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBillboard = NULL;		//頂点バッファのポインタ
 LPDIRECT3DTEXTURE9 g_pTextureBillboard = NULL;			//テクスチャのポインタ
 Billboard g_Billboard;
 
+D3DXMATRIX mtxWorldBillboard;
+
 //====================================================================
 //ポリゴンの初期化処理
 //====================================================================
@@ -34,7 +36,10 @@ void InitBillboard(void)
 	g_Billboard.pos = D3DXVECTOR3(0.0f, 0.0f,190.0f);
 
 	//頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffBillboard, NULL);
+	pDevice->CreateVertexBuffer(
+		sizeof(VERTEX_3D) * 4,
+		D3DUSAGE_WRITEONLY, FVF_VERTEX_3D,
+		D3DPOOL_MANAGED, &g_pVtxBuffBillboard, NULL);
 
 	//頂点バッファをロックし頂点情報へのポインタを取得
 	g_pVtxBuffBillboard->Lock(0, 0, (void**)&pVtx, 0);
@@ -45,7 +50,7 @@ void InitBillboard(void)
 	pVtx[2].pos = D3DXVECTOR3(g_Billboard.pos.x - 40.0f, g_Billboard.pos.y , 0.0f);
 	pVtx[3].pos = D3DXVECTOR3(g_Billboard.pos.x + 40.0f, g_Billboard.pos.y , 0.0f);
 	
-	//rhwの設定
+	//nor(法線)の設定
 	pVtx[0].nor =D3DXVECTOR3(0.0f,1.0f,0.0f);
 	pVtx[1].nor =D3DXVECTOR3(0.0f,1.0f,0.0f);
 	pVtx[2].nor =D3DXVECTOR3(0.0f,1.0f,0.0f);
@@ -109,7 +114,7 @@ void DrawBillboard(void)
 	pDevice = GetDevice();
 
 	//ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&g_Billboard.mtxWorld);
+	D3DXMatrixIdentity(&mtxWorldBillboard);
 
 	//Zテストを無効にする
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
@@ -148,20 +153,20 @@ void DrawBillboard(void)
 	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 	//ポリゴンをカメラに対して正面に向ける
-	D3DXMatrixInverse(&g_Billboard.mtxWorld, NULL,&mtxView);//逆行列を求める
+	D3DXMatrixInverse(&mtxWorldBillboard, NULL,&mtxView);//逆行列を求める
 	/*g_Billboard.mtxWorld._12 = 0.0f;
 	g_Billboard.mtxWorld._21 = 0.0f;*/
-	g_Billboard.mtxWorld._41 = 0.0f;
-	g_Billboard.mtxWorld._42 = 0.0f;
-	g_Billboard.mtxWorld._43 = 0.0f;
+	mtxWorldBillboard._41 = 0.0f;
+	mtxWorldBillboard._42 = 0.0f;
+	mtxWorldBillboard._43 = 0.0f;
 	
 	//位置を反映
 	D3DXMatrixTranslation(&mtxTrans, g_Billboard.pos.x, g_Billboard.pos.y, g_Billboard.pos.z);
 
-	D3DXMatrixMultiply(&g_Billboard.mtxWorld, &g_Billboard.mtxWorld, &mtxTrans);
+	D3DXMatrixMultiply(&mtxWorldBillboard, &mtxWorldBillboard, &mtxTrans);
 
 	//ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &g_Billboard.mtxWorld);
+	pDevice->SetTransform(D3DTS_WORLD, &mtxWorldBillboard);
 
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, g_pVtxBuffBillboard, 0, sizeof(VERTEX_3D));

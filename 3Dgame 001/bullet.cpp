@@ -9,7 +9,7 @@
 #include "input.h"
 #include "main.h"
 #include "bullet.h"
-#include "model.h"
+#include "player.h"
 #include "shadow.h"
 #include "wall.h"
 #include "obstacle.h"
@@ -253,7 +253,7 @@ void DrawBullet(void)
 //====================================================================
 void SetBullet(void)
 {
-	Model model = GetModel();
+	Player model = GetPlayer();
 
 	for (int nCntBllet = 0; nCntBllet < MAX_BULLET; nCntBllet++)
 	{

@@ -5,7 +5,6 @@
 typedef struct
 {
 	D3DXVECTOR3 pos;
-	D3DXMATRIX mtxWorld;
 }Billboard;
 
 //プロトタイプ宣言

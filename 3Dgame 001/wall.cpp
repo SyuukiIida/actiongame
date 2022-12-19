@@ -9,8 +9,10 @@
 #include "input.h"
 #include "main.h"
 #include "wall.h"
+#include "floor.h"
 
 #define MAX_WALL				(4)					//壁面数
+
 
 //グローバル変数
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffWall = NULL;		//頂点バッファのポインタ
@@ -46,10 +48,10 @@ void InitWall(void)
 	for (int nCntWall = 0; nCntWall < MAX_WALL; nCntWall++, pVtx +=4)
 	{
 		//頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-200.0f, +50.0f, 200.0f);
-		pVtx[1].pos = D3DXVECTOR3(200.0f, 50.0f, 200.0f);
-		pVtx[2].pos = D3DXVECTOR3(-200.0f, 0.0f, 200.0f);
-		pVtx[3].pos = D3DXVECTOR3(200.0f, 0.0f, 200.0f);
+		pVtx[0].pos = D3DXVECTOR3(-FLOOR_SIZE, +50.0f, FLOOR_SIZE);
+		pVtx[1].pos = D3DXVECTOR3(FLOOR_SIZE, 50.0f, FLOOR_SIZE);
+		pVtx[2].pos = D3DXVECTOR3(-FLOOR_SIZE, 0.0f, FLOOR_SIZE);
+		pVtx[3].pos = D3DXVECTOR3(FLOOR_SIZE, 0.0f, FLOOR_SIZE);
 
 		//rhwの設定
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f,-0.0f);
@@ -65,9 +67,9 @@ void InitWall(void)
 
 		//テクスチャ頂点座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(2.0f, 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(2.0f, 1.0f);
+		pVtx[1].tex = D3DXVECTOR2(3.0f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.5f);
+		pVtx[3].tex = D3DXVECTOR2(3.0f, 1.5f);
 	}
 
 	g_pVtxBuffWall->Unlock();
@@ -153,10 +155,10 @@ bool CollisionWallBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *p
 	for (int nCnt = 0; nCnt < MAX_WALL; nCnt++)
 	{
 
-		if (g_Wall[nCnt].pos.z + 200.0f >= pPosOld->z
-			&&g_Wall[nCnt].pos.z + 200.0f <= pPos->z)
+		if (g_Wall[nCnt].pos.z + FLOOR_SIZE >= pPosOld->z
+			&&g_Wall[nCnt].pos.z + FLOOR_SIZE <= pPos->z)
 		{
-			pPos->z = g_Wall[nCnt].pos.z + 200.0f;
+			pPos->z = g_Wall[nCnt].pos.z + FLOOR_SIZE;
 			pMove->z = 0.0f;
 			bLand = true;
 
@@ -166,27 +168,27 @@ bool CollisionWallBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *p
 			pMove->x = pMove->x*-15.0f;*/
 		}
 
-		if (g_Wall[nCnt].pos.z - 200.0f <= pPosOld->z
-			&&g_Wall[nCnt].pos.z - 200.0f >= pPos->z)
+		if (g_Wall[nCnt].pos.z - FLOOR_SIZE <= pPosOld->z
+			&&g_Wall[nCnt].pos.z - FLOOR_SIZE >= pPos->z)
 		{
-			pPos->z = g_Wall[nCnt].pos.z - 200.0f;
+			pPos->z = g_Wall[nCnt].pos.z - FLOOR_SIZE;
 			pMove->z = 0.0f;
 			bLand = true;
 		}
 
 
-		if (g_Wall[nCnt].pos.x + 200.0f >= pPosOld->x
-			&&g_Wall[nCnt].pos.x + 200.0f <= pPos->x)
+		if (g_Wall[nCnt].pos.x + FLOOR_SIZE >= pPosOld->x
+			&&g_Wall[nCnt].pos.x + FLOOR_SIZE <= pPos->x)
 		{
-			pPos->x = g_Wall[nCnt].pos.x + 200.0f;
+			pPos->x = g_Wall[nCnt].pos.x + FLOOR_SIZE;
 			pMove->x = 0.0f;
 			bLand = true;
 		}
 
-		if (g_Wall[nCnt].pos.x - 200.0f <= pPosOld->x
-			&&g_Wall[nCnt].pos.x - 200.0f >= pPos->x)
+		if (g_Wall[nCnt].pos.x - FLOOR_SIZE <= pPosOld->x
+			&&g_Wall[nCnt].pos.x - FLOOR_SIZE >= pPos->x)
 		{
-			pPos->x = g_Wall[nCnt].pos.x - 200.0f;
+			pPos->x = g_Wall[nCnt].pos.x - FLOOR_SIZE;
 			pMove->x = 0.0f;
 			bLand = true;
 		}
@@ -200,63 +202,71 @@ bool CollisionWallBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *p
 //壁の当たり判定
 //====================================================================
 bool CollisionWallPlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove
-	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold)
+	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold
+	, COLLISIONWALL collisionWall)
 {
 	bool bLand = false;			//当たったかどうか
 
 	for (int nCnt = 0; nCnt < MAX_WALL; nCnt++)
 	{
-
-		if (g_Wall[nCnt].pos.z + 200.0f >= vtxMaxModelold->z
-			&&g_Wall[nCnt].pos.z + 200.0f <= vtxMaxModel->z)
+		switch (collisionWall)
 		{
-			pPos->z = g_Wall[nCnt].pos.z + 200.0f - (vtxMaxModel->z - pPos->z);
-			vtxMinModel->z = g_Wall[nCnt].pos.z + 200.0f - (vtxMaxModel->z - vtxMinModel->z);
-			vtxMaxModel->z = g_Wall[nCnt].pos.z + 200.0f;			
-			pMove->z = 0.0f;
-			bLand = true;
+		case COLLISIONWALL_Z:
 
-			//跳ね返り
+			if (g_Wall[nCnt].pos.x + FLOOR_SIZE >= vtxMinModel->x
+				&&g_Wall[nCnt].pos.x - FLOOR_SIZE <= vtxMaxModel->x)
+			{//範囲内にいるとき
 
-			/*pMove->z = pMove->z*-15.0f;
-			pMove->x = pMove->x*-15.0f;*/
-		}
+				if (g_Wall[nCnt].pos.z + FLOOR_SIZE >= vtxMaxModelold->z
+					&&g_Wall[nCnt].pos.z + FLOOR_SIZE <= vtxMaxModel->z)
+				{//右壁に当たった
 
-		if (g_Wall[nCnt].pos.z - 200.0f <= vtxMinModelold->z
-			&&g_Wall[nCnt].pos.z - 200.0f >= vtxMinModel->z)
-		{
-			//pPos->z = g_Wall[nCnt].pos.z - 200.0f;
+					pPos->z = g_Wall[nCnt].pos.z + FLOOR_SIZE - (vtxMaxModel->z - pPos->z);
+					vtxMinModel->z = g_Wall[nCnt].pos.z + FLOOR_SIZE - (vtxMaxModel->z - vtxMinModel->z);
+					vtxMaxModel->z = g_Wall[nCnt].pos.z + FLOOR_SIZE;
+					bLand = true;
+				}
 
-			pPos->z = g_Wall[nCnt].pos.z - 200.0f - (vtxMinModel->z - pPos->z);
-			vtxMaxModel->z = g_Wall[nCnt].pos.z - 200.0f - (vtxMinModel->z - vtxMaxModel->z);
-			vtxMinModel->z = g_Wall[nCnt].pos.z - 200.0f;
+				if (g_Wall[nCnt].pos.z - FLOOR_SIZE <= vtxMinModelold->z
+					&&g_Wall[nCnt].pos.z - FLOOR_SIZE >= vtxMinModel->z)
+				{//左壁に当たった
 
-			pMove->z = 0.0f;
-			bLand = true;
-		}
+					pPos->z = g_Wall[nCnt].pos.z - FLOOR_SIZE - (vtxMinModel->z - pPos->z);
+					vtxMaxModel->z = g_Wall[nCnt].pos.z - FLOOR_SIZE - (vtxMinModel->z - vtxMaxModel->z);
+					vtxMinModel->z = g_Wall[nCnt].pos.z - FLOOR_SIZE;
+					bLand = true;
+				}
+			}
 
+			break;
 
-		if (g_Wall[nCnt].pos.x + 200.0f >= vtxMaxModelold->x
-			&&g_Wall[nCnt].pos.x + 200.0f <= vtxMaxModel->x)
-		{
-			pPos->x = g_Wall[nCnt].pos.x + 200.0f - (vtxMaxModel->x - pPos->x);
-			vtxMinModel->x = g_Wall[nCnt].pos.x + 200.0f - (vtxMaxModel->x - vtxMinModel->x);
-			vtxMaxModel->x = g_Wall[nCnt].pos.x + 200.0f;
-			pMove->x = 0.0f;
-			bLand = true;
-		}
+		case COLLISIONWALL_X:
 
-		if (g_Wall[nCnt].pos.x - 200.0f <= vtxMinModelold->x
-			&&g_Wall[nCnt].pos.x - 200.0f >= vtxMinModel->x)
-		{
-			pPos->x = g_Wall[nCnt].pos.x - 200.0f - (vtxMinModel->x - pPos->x);
-			vtxMaxModel->x = g_Wall[nCnt].pos.x - 200.0f - (vtxMinModel->x - vtxMaxModel->x);
-			vtxMinModel->x = g_Wall[nCnt].pos.x - 200.0f;
-			pMove->x = 0.0f;
-			bLand = true;
+			if (g_Wall[nCnt].pos.z + FLOOR_SIZE >= vtxMinModel->z
+				&&g_Wall[nCnt].pos.z - FLOOR_SIZE <= vtxMaxModel->z)
+			{
+				if (g_Wall[nCnt].pos.x + FLOOR_SIZE >= vtxMaxModelold->x
+					&&g_Wall[nCnt].pos.x + FLOOR_SIZE <= vtxMaxModel->x)
+				{
+					pPos->x = g_Wall[nCnt].pos.x + FLOOR_SIZE - (vtxMaxModel->x - pPos->x);
+					vtxMinModel->x = g_Wall[nCnt].pos.x + FLOOR_SIZE - (vtxMaxModel->x - vtxMinModel->x);
+					vtxMaxModel->x = g_Wall[nCnt].pos.x + FLOOR_SIZE;
+					bLand = true;
+				}
+
+				if (g_Wall[nCnt].pos.x - FLOOR_SIZE <= vtxMinModelold->x
+					&&g_Wall[nCnt].pos.x - FLOOR_SIZE >= vtxMinModel->x)
+				{
+					pPos->x = g_Wall[nCnt].pos.x - FLOOR_SIZE - (vtxMinModel->x - pPos->x);
+					vtxMaxModel->x = g_Wall[nCnt].pos.x - FLOOR_SIZE - (vtxMinModel->x - vtxMaxModel->x);
+					vtxMinModel->x = g_Wall[nCnt].pos.x - FLOOR_SIZE;
+					bLand = true;
+				}
+			}
+
+			break;
+
 		}
 	}
-	
-
 	return bLand;
 }

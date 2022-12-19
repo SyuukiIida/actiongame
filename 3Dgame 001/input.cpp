@@ -11,8 +11,10 @@
 
 LPDIRECTINPUT8 g_pInput = NULL;//Pirect Inputオブジェクトへのポインタ
 LPDIRECTINPUTDEVICE8 g_pDevKeyboard = NULL;//入力デバイス（キーボード）へのポインタ
-BYTE g_aKeyState[NUM_KEY_MAX];//キーボードのプレス情報
+BYTE g_aKeyStatePress[NUM_KEY_MAX];//キーボードのプレス情報
 BYTE g_aKeyStateTrigger[NUM_KEY_MAX];//キーボードのトリガー情報
+BYTE g_aKeyStateRelease[NUM_KEY_MAX];//キーボードのリリース情報
+BYTE g_aKeyStateRepeat[NUM_KEY_MAX];//キーボードのリピート情報
 
 //キーボードの初期化処理
 HRESULT InitKeyboard(HINSTANCE hInstance, HWND hWnd)
@@ -80,9 +82,16 @@ void UpdateKeyboard(void)
 	{
 		for (nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
 		{
-			g_aKeyStateTrigger[nCntKey] = (g_aKeyState[nCntKey] ^ aKeyState[nCntKey])&aKeyState[nCntKey];
-				
-			g_aKeyState[nCntKey] = aKeyState[nCntKey];//キーボードのプレス情報を保存
+			//キーボードのトリガー情報
+			g_aKeyStateTrigger[nCntKey] = (g_aKeyStatePress[nCntKey] ^ aKeyState[nCntKey])&aKeyState[nCntKey];
+
+			//キーボードのリリース情報
+			g_aKeyStateRelease[nCntKey] = (g_aKeyStatePress[nCntKey] ^ aKeyState[nCntKey]) &g_aKeyStatePress[nCntKey];
+
+			//キーボードのリピート情報
+
+			//キーボードの情報を保存
+			g_aKeyStatePress[nCntKey] = aKeyState[nCntKey];
 		}
 	}
 	else
@@ -92,17 +101,26 @@ void UpdateKeyboard(void)
 }
 
 //=====================================================================
-//キーボードのプレス情報を取得
+//キーボードの情報を取得
 //=====================================================================
+
+//プレス情報-----------------------------------------------------------
 bool GetKeyboardPress(int nKey)
 {
-	return(g_aKeyState[nKey] & 0x80) ? true : false;
+	return(g_aKeyStatePress[nKey] & 0x80) ? true : false;
 }
 
-//=====================================================================
-//キーボードのトリガー情報を取得
-//=====================================================================
+//トリガー情報---------------------------------------------------------
 bool GetKeyboardTrigger(int nKey)
 {
 	return(g_aKeyStateTrigger[nKey] & 0x80) ? true : false;
 }
+
+//リリース情報---------------------------------------------------------
+bool GetKeyboardRelease(int nKey)
+{
+	return(g_aKeyStateRelease[nKey] & 0x80) ? true : false;
+}
+
+//リピート情報---------------------------------------------------------
+

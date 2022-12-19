@@ -10,20 +10,17 @@
 //グローバル変数
 LPDIRECT3DTEXTURE9 g_apTextureresult = NULL; //テクスチャのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffresult = NULL;//頂点バッファのポインタ
-RESULT g_Result;
 bool Bonus = false;
 
 //====================================================================
 //ポリゴンの初期化処理
 //====================================================================
 
-void InitResult(RESULT result)
+void InitResult()
 {
 	LPDIRECT3DDEVICE9 pDevice;
 	//デバイスの取得
 	pDevice = GetDevice();
-
-	g_Result = result;
 		
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice,
@@ -76,7 +73,7 @@ void InitResult(RESULT result)
 	g_pVtxBuffresult->Unlock();
 
 	//ゲーム結果初期化処理
-	InitResultJudge(g_Result);
+	InitResultJudge();
 
 }
 

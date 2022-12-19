@@ -53,7 +53,8 @@ void InitObstacle(void)
 	{
 		g_aObstacle[nCnt].vtxMinModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aObstacle[nCnt].vtxMaxModel = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aObstacle[nCnt].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aObstacle[nCnt].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f); 
+		g_aObstacle[nCnt].state = ENEMYSTATE_NORMAL;
 		g_aObstacle[nCnt].nLife = MAX_LIFE;
 		g_aObstacle[nCnt].bUse = false;
 	}
@@ -364,10 +365,10 @@ bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 					bLand = true;
 					HitObstacle(nCnt, 1);
 
-					//跳ね返り
+					////跳ね返り
 
-					/*pMove->z = pMove->z*-15.0f;
-					pMove->x = pMove->x*-15.0f;*/
+					//pMove->z = pMove->z*-1.0f;
+					//pMove->x = pMove->x*-1.0f;
 				}
 
 				if (g_aObstacle[nCnt].vtxMinModel.z >= pPosOld->z
@@ -411,7 +412,8 @@ bool CollisionObstacleBullet(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 //障害物とプレイヤーの当たり判定
 //====================================================================
 bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR3 *pMove
-	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold)
+	, D3DXVECTOR3 *vtxMaxModel, D3DXVECTOR3 *vtxMinModel, D3DXVECTOR3 *vtxMaxModelold, D3DXVECTOR3 *vtxMinModelold
+	, COLLISIONOBSTACLE collisionObstacle)
 {
 	bool bLand = false;
 
@@ -419,65 +421,62 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 	{
 		if (g_aObstacle[nCnt].bUse == true)
 		{
+			switch (collisionObstacle)
+			{
+			case COLLISIONOBSTACLE_Z:
 
-			if (g_aObstacle[nCnt].vtxMinModel.x < vtxMaxModel->x
-				&&g_aObstacle[nCnt].vtxMaxModel.x > vtxMinModel->x
-				&&g_aObstacle[nCnt].vtxMinModel.y < vtxMaxModel->y
-				&&g_aObstacle[nCnt].vtxMaxModel.y > vtxMinModel->y)
-			{//障害物のx軸の幅の中にいるとき
-				if (g_aObstacle[nCnt].vtxMaxModel.z <= vtxMinModelold->z
-					&&g_aObstacle[nCnt].vtxMaxModel.z >= vtxMinModel->z)
-				{//奥から手前に当たった時
-					//pPos->z = g_aObstacle[nCnt].vtxMaxModel.z;
+				if (g_aObstacle[nCnt].vtxMinModel.x < vtxMaxModel->x
+					&&g_aObstacle[nCnt].vtxMaxModel.x > vtxMinModel->x
+					&&g_aObstacle[nCnt].vtxMinModel.y < vtxMaxModel->y
+					&&g_aObstacle[nCnt].vtxMaxModel.y > vtxMinModel->y)
+				{//障害物のx軸の幅の中にいるとき
+					if (g_aObstacle[nCnt].vtxMaxModel.z <= vtxMinModelold->z
+						&&g_aObstacle[nCnt].vtxMaxModel.z >= vtxMinModel->z)
+					{//奥から手前に当たった時
+						//pPos->z = g_aObstacle[nCnt].vtxMaxModel.z;
 
-					pPos->z = g_aObstacle[nCnt].vtxMaxModel.z - (vtxMinModel->z - pPos->z);
-					vtxMaxModel->z = g_aObstacle[nCnt].vtxMaxModel.z  - (vtxMinModel->z - vtxMaxModel->z);
-					vtxMinModel->z = g_aObstacle[nCnt].vtxMaxModel.z;
+						pPos->z = g_aObstacle[nCnt].vtxMaxModel.z - (vtxMinModel->z - pPos->z);
+						vtxMaxModel->z = g_aObstacle[nCnt].vtxMaxModel.z - (vtxMinModel->z - vtxMaxModel->z);
+						vtxMinModel->z = g_aObstacle[nCnt].vtxMaxModel.z;
+						bLand = true;
+					}
 
-					pMove->z = 0.0f;
-					bLand = true;
-
-					//跳ね返り
-
-					/*pMove->z = pMove->z*-15.0f;
-					pMove->x = pMove->x*-15.0f;*/
+					if (g_aObstacle[nCnt].vtxMinModel.z >= vtxMaxModelold->z
+						&&g_aObstacle[nCnt].vtxMinModel.z <= vtxMaxModel->z)
+					{//手前から奥に当たった時
+						pPos->z = g_aObstacle[nCnt].vtxMinModel.z - (vtxMaxModel->z - pPos->z);
+						vtxMinModel->z = g_aObstacle[nCnt].vtxMinModel.z - (vtxMaxModel->z - vtxMinModel->z);
+						vtxMaxModel->z = g_aObstacle[nCnt].vtxMinModel.z;
+						bLand = true;
+					}
 				}
+				break;
 
-				if (g_aObstacle[nCnt].vtxMinModel.z >= vtxMaxModelold->z
-					&&g_aObstacle[nCnt].vtxMinModel.z <= vtxMaxModel->z)
-				{//手前から奥に当たった時
-					pPos->z = g_aObstacle[nCnt].vtxMinModel.z - (vtxMaxModel->z - pPos->z);
-					vtxMinModel->z = g_aObstacle[nCnt].vtxMinModel.z - (vtxMaxModel->z - vtxMinModel->z);
-					vtxMaxModel->z = g_aObstacle[nCnt].vtxMinModel.z;
-					pMove->z = 0.0f;
-					bLand = true;
-				}
-			}
+			case COLLISIONOBSTACLE_X:
 
-			if (g_aObstacle[nCnt].vtxMinModel.z < vtxMaxModel->z
-				&&g_aObstacle[nCnt].vtxMaxModel.z > vtxMinModel->z
-				&&g_aObstacle[nCnt].vtxMinModel.y < vtxMaxModel->y
-				&&g_aObstacle[nCnt].vtxMaxModel.y > vtxMinModel->y)
-			{//障害物のz軸の幅の中にいるとき
+				if (g_aObstacle[nCnt].vtxMinModel.z < vtxMaxModel->z
+					&&g_aObstacle[nCnt].vtxMaxModel.z > vtxMinModel->z
+					&&g_aObstacle[nCnt].vtxMinModel.y < vtxMaxModel->y
+					&&g_aObstacle[nCnt].vtxMaxModel.y > vtxMinModel->y)
+				{//障害物のz軸の幅の中にいるとき
 
-				if (g_aObstacle[nCnt].vtxMaxModel.x <= vtxMinModelold->x
-					&&g_aObstacle[nCnt].vtxMaxModel.x >= vtxMinModel->x)
-				{//右から左に当たった時
-					pPos->x = g_aObstacle[nCnt].vtxMaxModel.x - (vtxMinModel->x - pPos->x);
-					vtxMaxModel->x = g_aObstacle[nCnt].vtxMaxModel.x - (vtxMinModel->x - vtxMaxModel->x);
-					vtxMinModel->x = g_aObstacle[nCnt].vtxMaxModel.x;
-					pMove->x = 0.0f;
-					bLand = true;
-				}
+					if (g_aObstacle[nCnt].vtxMaxModel.x <= vtxMinModelold->x
+						&&g_aObstacle[nCnt].vtxMaxModel.x >= vtxMinModel->x)
+					{//右から左に当たった時
+						pPos->x = g_aObstacle[nCnt].vtxMaxModel.x - (vtxMinModel->x - pPos->x);
+						vtxMaxModel->x = g_aObstacle[nCnt].vtxMaxModel.x - (vtxMinModel->x - vtxMaxModel->x);
+						vtxMinModel->x = g_aObstacle[nCnt].vtxMaxModel.x;
+						bLand = true;
+					}
 
-				if (g_aObstacle[nCnt].vtxMinModel.x >= vtxMaxModelold->x
-					&&g_aObstacle[nCnt].vtxMinModel.x <= vtxMaxModel->x)
-				{//左から右に当たった時
-					pPos->x = g_aObstacle[nCnt].vtxMinModel.x - (vtxMaxModel->x - pPos->x);
-					vtxMinModel->x = g_aObstacle[nCnt].vtxMinModel.x - (vtxMaxModel->x - vtxMinModel->x);
-					vtxMaxModel->x = g_aObstacle[nCnt].vtxMinModel.x;
-					pMove->x = 0.0f;
-					bLand = true;
+					if (g_aObstacle[nCnt].vtxMinModel.x >= vtxMaxModelold->x
+						&&g_aObstacle[nCnt].vtxMinModel.x <= vtxMaxModel->x)
+					{//左から右に当たった時
+						pPos->x = g_aObstacle[nCnt].vtxMinModel.x - (vtxMaxModel->x - pPos->x);
+						vtxMinModel->x = g_aObstacle[nCnt].vtxMinModel.x - (vtxMaxModel->x - vtxMinModel->x);
+						vtxMaxModel->x = g_aObstacle[nCnt].vtxMinModel.x;
+						bLand = true;					
+					}
 				}
 			}
 
@@ -488,7 +487,7 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 			{//xz判定の中にいるとき
 				if (g_aObstacle[nCnt].vtxMaxModel.y <= pPosOld->y
 					&&g_aObstacle[nCnt].vtxMaxModel.y >= pPos->y)
-				{//右から左に当たった時
+				{//上から下に当たった時
 					pPos->y = g_aObstacle[nCnt].vtxMaxModel.y;
 					pMove->y = 0.0f;
 					bLand = true;
@@ -496,7 +495,7 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 
 				if (g_aObstacle[nCnt].vtxMinModel.y >= pPosOld->y
 					&&g_aObstacle[nCnt].vtxMinModel.y <= pPos->y)
-				{
+				{//下から上に当たった時
 					pPos->y = g_aObstacle[nCnt].vtxMinModel.y;
 					pMove->y = 0.0f;
 					bLand = true;
@@ -504,59 +503,6 @@ bool CollisionObstaclePlayer(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pPosOld, D3DXVECTOR
 			}
 		}
 	}
-
-	//for (int nCnt = 0; nCnt < MAX_OBSRACLE; nCnt++)
-	//{
-	//	if (g_aObstacle[nCnt].bUse == true)
-	//	{
-	//		if (g_aObstacle[nCnt].vtxMinModel.x < vtxMaxModel->x
-	//			&&g_aObstacle[nCnt].vtxMaxModel.x > vtxMinModel->x)
-	//		{//障害物のx軸の幅の中にいるとき
-	//			if (g_aObstacle[nCnt].vtxMaxModel.z <= vtxMinModelold->z
-	//				&&g_aObstacle[nCnt].vtxMaxModel.z >= vtxMinModel->z)
-	//			{//奥から手前に当たった時
-	//				pPos->z = g_aObstacle[nCnt].vtxMaxModel.z - vtxMinModel->z;
-	//				vtxMinModel->z = g_aObstacle[nCnt].vtxMaxModel.z;
-	//				pMove->z = 0.0f;
-	//				bLand = true;
-
-	//				//跳ね返り
-
-	//				/*pMove->z = pMove->z*-15.0f;
-	//				pMove->x = pMove->x*-15.0f;*/
-	//			}
-
-	//			if (g_aObstacle[nCnt].vtxMinModel.z >= vtxMaxModelold->z
-	//				&&g_aObstacle[nCnt].vtxMinModel.z <= vtxMaxModel->z)
-	//			{
-	//				pPos->z = g_aObstacle[nCnt].vtxMinModel.z;
-	//				pMove->z = 0.0f;
-	//				bLand = true;
-	//			}
-	//		}
-
-	//		if (g_aObstacle[nCnt].vtxMinModel.z < vtxMaxModel->z
-	//			&&g_aObstacle[nCnt].vtxMaxModel.z > vtxMinModel->z)
-	//		{
-	//			if (g_aObstacle[nCnt].vtxMaxModel.x <= vtxMinModelold->x
-	//				&&g_aObstacle[nCnt].vtxMaxModel.x >= vtxMinModel->x)
-	//			{
-	//				pPos->x = g_aObstacle[nCnt].vtxMaxModel.x;
-	//				pMove->x = 0.0f;
-	//				bLand = true;
-	//			}
-
-	//			if (g_aObstacle[nCnt].vtxMinModel.x >= vtxMinModelold->x
-	//				&&g_aObstacle[nCnt].vtxMinModel.x <= vtxMinModel->x)
-	//			{
-	//				pPos->x = g_aObstacle[nCnt].vtxMinModel.x;
-	//				pMove->x = 0.0f;
-	//				bLand = true;
-	//			}
-	//		}
-	//	}
-	//}
-
 	return bLand;
 }
 
@@ -674,13 +620,9 @@ void LoadObstacle(void)
 						//空白の後の文字を読み込む
 						pSprit = strtok(NULL, " =");
 						pObstacle->pos.z = (float)atof(pSprit);
-
-						//fscanf(pFile, "%f", &pObstacle->pos.x);	// X
-						//fscanf(pFile, "%f", &pObstacle->pos.y);	// Y
-						//fscanf(pFile, "%f", &pObstacle->pos.z);	// Z
 					}
 
-					else if (strcmp(aDataSearch, "ROT") == 0)
+					else if (strncmp(aDataSearch, "ROT", 3) == 0)
 					{// 向き
 						char *pSprit;
 						pSprit = strtok(&aDataSearch[0], " =");		//空白までの文字を使わない

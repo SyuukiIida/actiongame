@@ -5,7 +5,7 @@
 #include "game.h"
 #include "input.h"
 #include "polygon.h"
-#include "model.h"
+#include "player.h"
 #include "shadow.h"
 #include "billboard.h"
 #include "wall.h"
@@ -16,6 +16,10 @@
 #include "camera.h"
 #include "light.h"
 #include "fade.h"
+#include "goalflag.h"
+#include "time.h"
+#include "gauge.h"
+#include "shootarrow.h"
 
 
 
@@ -39,15 +43,26 @@ void InitGame(void)
 	InitFloor();
 	//InitMeshfield();
 
+	//矢印の初期化処理
+	InitShootArrow();
+
 	//影の初期化処理
 	InitShadow();
 
 	//ビルボード初期化処理
-	InitBillboard();
+	//InitBillboard();
 
 	//モデルの初期化処理
-	InitModel();
+	InitPlayer();
+	InitGoalFlag();
 	InitObstacle();
+
+	//ゲージ描画処理
+	InitGauge();
+
+	//タイムの初期化処理
+	InitTime();
+	SetTime(10);
 
 	//弾の初期化処理
 	InitBullet();
@@ -83,16 +98,26 @@ void UninitGame(void)
 	UninitWall();
 
 	//ビルボード終了処理
-	UninitBillboard();
+	//UninitBillboard();
 
 	//弾の終了処理
 	UninitBullet();
+
+	//タイムの終了処理
+	UninitTime();
+
+	//ゲージ終了処理
+	UninitGauge();
+
+	//矢印の終了処理
+	UninitShootArrow();
 
 	//影の終了処理
 	UninitShadow();
 
 	//モデルの終了処理
-	UninitModel();
+	UninitPlayer();
+	UninitGoalFlag();
 	UninitObstacle();
 
 	//カメラの終了処理
@@ -111,18 +136,30 @@ void UpdateGame(void)
 	UpdateFloor();
 	//UpdateMeshfield();
 
+	
+
+	//ビルボード更新処理
+	//UpdateBillboard();
+
+	//モデルの更新処理
+	UpdatePlayer();
+	UpdateGoalFlag();
+	UpdateObstacle();
+
 	//壁の更新処理
 	UpdateWall();
 
-	//ビルボード更新処理
-	UpdateBillboard();
+	//ゲージ描画処理
+	UpdateGauge();
 
-	//モデルの更新処理
-	UpdateModel();
-	UpdateObstacle();
+	//タイムの更新処理
+	UpdateTime();
 
 	//弾の更新処理
 	UpdateBullet();
+
+	//矢印の更新処理
+	UpdateShootArrow();
 
 	//影の更新処理
 	UpdateShadow();
@@ -182,17 +219,25 @@ void DrawGame(void)
 	//壁の描画処理
 	DrawWall();
 
-
-
 	//モデルの描画処理
-	DrawModel();
+	DrawPlayer();
+	DrawGoalFlag();
 	DrawObstacle();
+
+	//矢印の描画処理
+	DrawShootArrow();
 
 	//影の描画処理
 	DrawShadow();
 
 	//ビルボード描画処理
-	DrawBillboard();
+	//DrawBillboard();
+
+	//ゲージ描画処理
+	DrawGauge();
+
+	//タイムの更新処理
+	DrawTime();
 
 	//弾の描画処理
 	DrawBullet();

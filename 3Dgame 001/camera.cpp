@@ -4,7 +4,7 @@
 #include "input.h"
 #include "main.h"
 #include "camera.h"
-#include "model.h"
+#include "player.h"
 
 //グローバル変数
 Camera g_camera;		//カメラの情報
@@ -41,32 +41,11 @@ void UpdateCamera(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();		//デバイスの取得
 
-	Model model = GetModel();
+	Player model = GetPlayer();
 
 	g_camera.fAngle = atan2f(g_camera.posV.x, g_camera.posV.z);
 
 	g_camera.posR = model.pos;
-
-	/*g_camera.posV.x = g_camera.posR.x - sinf(g_camera.rot.y)*g_camera.posfLength;
-	g_camera.posV.z = g_camera.posR.z - sinf(g_camera.rot.y)*g_camera.posfLength;*/
-
-	if (GetKeyboardPress(DIK_W) == true)
-	{//W(奥)キーが押された
-		g_camera.posV.x += sinf(0 + g_camera.rot.y) * 1.0f;
-		g_camera.posV.z += cosf(0 + g_camera.rot.y) * 1.0f;
-							   
-		g_camera.posR.x += sinf(0 + g_camera.rot.y) * 1.0f;
-		g_camera.posR.z += cosf(0 + g_camera.rot.y) * 1.0f;
-	}
-
-	if (GetKeyboardPress(DIK_S) == true)
-	{//S(手前)キーが押された
-		g_camera.posV.x += sinf(D3DX_PI + g_camera.rot.y) * 1.0f;
-		g_camera.posV.z += cosf(D3DX_PI + g_camera.rot.y) * 1.0f;
-
-		g_camera.posR.x += sinf(D3DX_PI + g_camera.rot.y) * 1.0f;
-		g_camera.posR.z += cosf(D3DX_PI + g_camera.rot.y) * 1.0f;
-	}
 
 	if (GetKeyboardPress(DIK_E) == true)
 	{//E(注視点右回転)キーが押された
@@ -81,33 +60,6 @@ void UpdateCamera(void)
 	g_camera.posV.x = g_camera.posR.x - sinf(g_camera.rot.y) * g_camera.posfLength;
 	g_camera.posV.z = g_camera.posR.z - cosf(g_camera.rot.y) * g_camera.posfLength;
 
-	if (GetKeyboardPress(DIK_Z) == true)
-	{//Z(視点右回転)キーが押された
-		g_camera.rot.y -= 0.01f* D3DX_PI;
-
-
-		g_camera.posR.x = g_camera.posV.x + sinf(g_camera.rot.y) * g_camera.posfLength;
-		g_camera.posR.z = g_camera.posV.z + cosf(g_camera.rot.y) * g_camera.posfLength;
-	}
-
-	if (GetKeyboardPress(DIK_C) == true)
-	{//C(視点左回転)キーが押された
-		g_camera.rot.y += 0.01f* D3DX_PI;
-
-
-		g_camera.posR.x = g_camera.posV.x + sinf(g_camera.rot.y) * g_camera.posfLength;
-		g_camera.posR.z = g_camera.posV.z + cosf(g_camera.rot.y) * g_camera.posfLength;
-	}
-
-	//if (GetKeyboardPress(DIK_T) == true)
-	//{//T(左)キーが押された
-	//	g_camera.rot.y += 0.01f;
-
-
-	//	g_camera.posV.z = g_camera.posR.z - sinf(D3DX_PI * g_camera.rot.y) * g_camera.posfLength;
-	//	g_camera.posV.y = g_camera.posR.y - cosf(D3DX_PI * g_camera.rot.y) * g_camera.posfLength;
-	//}
-
 	if (GetKeyboardPress(DIK_T) == true)
 	{//Tキーが押された
 		g_camera.posV.y += 0.5f;
@@ -116,16 +68,6 @@ void UpdateCamera(void)
 	if (GetKeyboardPress(DIK_B) == true)
 	{//Bキーが押された
 		g_camera.posV.y -= 0.5f;
-	}
-
-	if (GetKeyboardPress(DIK_Y) == true)
-	{//Yキーが押された
-		g_camera.posR.y += 0.5f;
-	}
-
-	if (GetKeyboardPress(DIK_N) == true)
-	{//Nキーが押された
-		g_camera.posR.y -= 0.5f;
 	}
 }
 

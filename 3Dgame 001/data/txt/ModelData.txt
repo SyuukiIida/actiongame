@@ -8,51 +8,76 @@
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 2
+NUM_MODEL = 4
 
 #------------------------------------------------------------------------------
 #モデルファイル名
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/MODEL/pot.x
 MODEL_FILENAME = data/MODEL/moon.x
+MODEL_FILENAME = data/MODEL/wall000.x
+MODEL_FILENAME = data/MODEL/wall001.x
 
 #------------------------------------------------------------------------------
 # モデル配置情報
 #------------------------------------------------------------------------------
 MODELSET
-	TYPE 1
-	POS 100 0 50
+	TYPE 3
+	POS 100 -10 50
 	ROT 0 0 0
 END_MODELSET
 
 MODELSET
-	TYPE 0
+	TYPE 3
+	POS 50 0 50
+	ROT 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE 3
+	POS -50 0 50
+	ROT 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE 2
 	POS -100 0 50
 	ROT 0 0 0
 END_MODELSET
 
 MODELSET
-	TYPE 0
+	TYPE 2
 	POS -100 0 -50
 	ROT 0 0 0
 END_MODELSET
 
 MODELSET
-	TYPE 1
+	TYPE 2
 	POS 100 0 -50
 	ROT 0 0 0
 END_MODELSET
 
 MODELSET
-	TYPE 1
+	TYPE 2
 	POS 100 0 -100
 	ROT 0 0 0
 END_MODELSET
 
+MODELSET
+	TYPE 2
+	POS 100 0 200
+	ROT 0 0 0
+END_MODELSET
 
 MODELSET
-	TYPE 1
-	POS 100 0 200
+	TYPE 2
+	POS -150 0 200
+	ROT 0 0 0
+END_MODELSET
+
+MODELSET
+	TYPE 3
+	POS -200 0 200
 	ROT 0 0 0
 END_MODELSET
 
